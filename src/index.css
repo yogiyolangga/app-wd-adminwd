@@ -115,3 +115,15 @@ body {
     font-weight: 900;
     font-style: italic;
 }
+
+.smooch-sans-bold {
+    font-family: "Smooch Sans", sans-serif;
+    font-weight: 800;
+    font-style: normal;
+}
+
+.smooch-sans-regular {
+    font-family: "Smooch Sans", sans-serif;
+    font-weight: 650;
+    font-style: normal;
+}

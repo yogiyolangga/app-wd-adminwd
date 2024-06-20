@@ -1,7 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import Grabbed from "./components/Grabbed";
+import Login from "./components/Login";
 import Admin from "./components/Admin";
+import DataProcess from "./components/DataProcess";
 
 function App() {
   return (
@@ -10,7 +12,9 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/grabbed" element={<Grabbed />} />
+            <Route path="/data-process" element={<DataProcess />} />
             <Route path="/admin" element={<Admin />} />
           </Routes>
         </Router>

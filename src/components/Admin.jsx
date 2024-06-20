@@ -23,7 +23,7 @@ export default function Admin() {
   const [adminList, setAdminList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [getStatus, setGetStatus] = useState("");
-  const [editIndex, setEditIndex] = useState();
+  const [editId, setEditId] = useState();
 
   const getAdmin = async () => {
     setLoading(true);
@@ -86,7 +86,7 @@ export default function Admin() {
             getStatus={getStatus}
             getAdmin={getAdmin}
             setEditForm={setEditForm}
-            setEditIndex={setEditIndex}
+            setEditId={setEditId}
           />
         </div>
       </div>
@@ -97,7 +97,7 @@ export default function Admin() {
       >
         <EditAdmin
           setEditForm={setEditForm}
-          editIndex={editIndex}
+          editId={editId}
           adminList={adminList}
           apiUrl={apiUrl}
           getAdmin={getAdmin}
@@ -259,7 +259,7 @@ const Admins = ({
   getStatus,
   getAdmin,
   setEditForm,
-  setEditIndex,
+  setEditId,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
@@ -291,7 +291,7 @@ const Admins = ({
 
   const handleClickEdit = (id) => {
     setEditForm(true);
-    setEditIndex(id);
+    setEditId(id);
   };
 
   const filteredData = adminList.filter((item) => {
@@ -441,7 +441,7 @@ const Admins = ({
                 <div className="w-20 flex justify-center gap-1">
                   <button
                     className="py-1 px-2 rounded-md bg-[#602BF8] hover:bg-opacity-80"
-                    onClick={() => handleClickEdit(index)}
+                    onClick={() => handleClickEdit(item.admin_id)}
                   >
                     <ImPencil2 className="text-zinc-100" />
                   </button>
@@ -479,7 +479,7 @@ const Admins = ({
   );
 };
 
-const EditAdmin = ({ setEditForm, editIndex, adminList, apiUrl, getAdmin }) => {
+const EditAdmin = ({ setEditForm, editId, adminList, apiUrl, getAdmin }) => {
   const [loading, setLoading] = useState(false);
   const [passwordType, setPasswordType] = useState("password");
   const [adminId, setAdminId] = useState();
@@ -487,6 +487,8 @@ const EditAdmin = ({ setEditForm, editIndex, adminList, apiUrl, getAdmin }) => {
   const [newUsername, setNewUsername] = useState("");
   const [newPass, setNewPass] = useState("");
   const [status, setStatus] = useState("");
+
+  const dataSelect = adminList.find((item) => item.admin_id === editId);
 
   const handleUpadateAdmin = async () => {
     setLoading(true);
@@ -516,13 +518,13 @@ const EditAdmin = ({ setEditForm, editIndex, adminList, apiUrl, getAdmin }) => {
   };
 
   useEffect(() => {
-    if (editIndex != undefined) {
-      setNewFullname(adminList[editIndex].fullname);
-      setNewUsername(adminList[editIndex].username);
+    if (editId != undefined) {
+      setNewFullname(dataSelect.fullname);
+      setNewUsername(dataSelect.username);
       setNewPass("");
-      setAdminId(adminList[editIndex].admin_id);
+      setAdminId(dataSelect.admin_id);
     }
-  }, [editIndex]);
+  }, [editId]);
 
   return (
     <>

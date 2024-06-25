@@ -159,7 +159,7 @@ const Data = ({
   adminId,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [postPerPage, setPostPerPage] = useState(10);
+  const [postPerPage, setPostPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -182,12 +182,14 @@ const Data = ({
       );
       setByStatusData(filtered);
       setStatusData(status);
+      setCurrentPage(1);
     } else {
       const filtered = dataHistoryDetails.filter(
         (item) => item.status === status
       );
       setByStatusData(filtered);
       setStatusData(status);
+      setCurrentPage(1);
     }
   };
 
@@ -470,7 +472,7 @@ const Data = ({
     const seconds = String(date.getUTCSeconds()).padStart(2, "0");
 
     // Gabungkan menjadi format yang diinginkan
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    return `${day}-${month}-${year} | ${hours}:${minutes}:${seconds}`;
   };
 
   return (

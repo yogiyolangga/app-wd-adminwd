@@ -12,12 +12,14 @@ import { FaMagento } from "react-icons/fa";
 
 export function Sidebar() {
   const path = useLocation();
-
   const navigate = useNavigate();
+
+  const role = localStorage.getItem("roleAdminWd");
 
   const handleLogout = () => {
     localStorage.removeItem("userAdminWd");
     localStorage.removeItem("tokenAdminWd");
+    localStorage.removeItem("roleAdminWd");
     navigate("/login");
   };
 
@@ -29,7 +31,7 @@ export function Sidebar() {
             className={`w-[24px] h-[24px] hover:text-white ${
               path.pathname == "/" ? "text-white" : "text-zinc-400"
             }`}
-              title="Home"
+            title="Home"
           />
         </a>
         <a href="/grabbed">
@@ -37,7 +39,7 @@ export function Sidebar() {
             className={`w-[24px] h-[24px] hover:text-white ${
               path.pathname == "/grabbed" ? "text-white" : "text-zinc-400"
             }`}
-              title="Grabbed"
+            title="Grabbed"
           />
         </a>
         <a href="/data-process">
@@ -45,17 +47,20 @@ export function Sidebar() {
             className={`w-[24px] h-[24px] hover:text-white ${
               path.pathname == "/data-process" ? "text-white" : "text-zinc-400"
             }`}
-              title="On Process"
+            title="On Process"
           />
         </a>
-        <a href="/data-process-supadmin">
+        <a
+          href="/data-process-supadmin"
+          className={`${role != "administrator" ? "hidden" : ""}`}
+        >
           <BsDatabaseFillLock
             className={`w-[24px] h-[24px] hover:text-white ${
               path.pathname == "/data-process-supadmin"
                 ? "text-white"
                 : "text-zinc-400"
             }`}
-              title="On Process"
+            title="On Process"
           />
         </a>
         <a href="/history">
@@ -63,10 +68,14 @@ export function Sidebar() {
             className={`w-[24px] h-[24px] hover:text-white ${
               path.pathname.includes("history") ? "text-white" : "text-zinc-400"
             }`}
-              title="History"
+            title="History"
           />
         </a>
-        <div className="relative group cursor-pointer">
+        <div
+          className={`relative group cursor-pointer ${
+            role != "administrator" ? "hidden" : ""
+          }`}
+        >
           <div>
             <RiSettings5Fill
               className={`w-[24px] h-[24px] hover:text-white ${
@@ -105,7 +114,7 @@ export function Sidebar() {
           <HiOutlineLogout
             className="w-[24px] h-[24px] hover:text-white text-zinc-400"
             onClick={handleLogout}
-              title="Logout"
+            title="Logout"
           />
         </div>
       </div>

@@ -45,6 +45,7 @@ const LoginForm = ({ apiUrl }) => {
       if (response.data.success) {
         localStorage.setItem("tokenAdminWd", response.data.token);
         localStorage.setItem("userAdminWd", response.data.username);
+        localStorage.setItem("roleAdminWd", response.data.result[0].role);
         navigate("/");
       } else if (response.data.error) {
         setLoginMessage(response.data.error);

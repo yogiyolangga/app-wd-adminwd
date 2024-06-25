@@ -95,7 +95,7 @@ export default function TotalWdAgent({ dataWdFromDb }) {
               </thead>
               <tbody>
                 {agentList.map((item, index) => (
-                  <tr key={index} className="border-b hover:bg-zinc-100">
+                  <tr key={index} className={`border-b hover:bg-zinc-100 ${getLengtByAgent(item.agent_id) === 0 ? "hidden" : ""}`}>
                     <th scope="row" className="px-6 py-1 kanit-regular">
                       {item.name}
                     </th>

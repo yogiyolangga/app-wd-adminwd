@@ -21,6 +21,7 @@ export default function Admin() {
   const apiUrl = import.meta.env.VITE_API_URL;
   const userLogin = localStorage.getItem("userAdminWd");
   const token = localStorage.getItem("tokenAdminWd");
+  const role = localStorage.getItem("roleAdminWd");
   const navigate = useNavigate();
 
   const [fullname, setFullname] = useState("");
@@ -34,6 +35,13 @@ export default function Admin() {
   useEffect(() => {
     if (!userLogin || !token) {
       navigate("/login");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (role != "administrator") {
+      alert("You can't access this page");
+      navigate("/");
     }
   }, []);
 

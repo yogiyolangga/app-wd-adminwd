@@ -5,9 +5,12 @@ export default function Header({ fullname }) {
   const path = useLocation();
   const navigate = useNavigate();
 
+  const role = localStorage.getItem("roleAdminWd");
+
   const handleLogout = () => {
     localStorage.removeItem("userAdminWd");
     localStorage.removeItem("tokenAdminWd");
+    localStorage.removeItem("roleAdminWd");
     navigate("/login");
   };
   return (
@@ -43,7 +46,7 @@ export default function Header({ fullname }) {
             href="/data-process-supadmin"
             className={`hover:underline ${
               path.pathname == "/data-process-supadmin" ? "underline" : ""
-            }`}
+            } ${role != "administrator" ? "hidden" : ""}`}
           >
             **
           </a>
@@ -55,9 +58,22 @@ export default function Header({ fullname }) {
           >
             history
           </a>
-          <div className="relative cursor-pointer group">
-            <p>access</p>
-            <div className="absolute z-10 flex flex-col gap-2 item-center top-0 scale-0 -left-2.5 bg-gray-400 p-2 rounded-md group-hover:opacity-100 group-hover:scale-100 group-hover:top-5 duration-200">
+          <div
+            className={`relative cursor-pointer group ${
+              role != "administrator" ? "hidden" : ""
+            }`}
+          >
+            <p
+              className={`${
+                path.pathname.includes("admin") ||
+                path.pathname.includes("agent")
+                  ? "underline"
+                  : ""
+              }`}
+            >
+              access
+            </p>
+            <div className="absolute z-10 flex flex-col gap-2 item-center top-0 scale-0 -left-2.5 bg-gray-200 p-2 rounded-md group-hover:opacity-100 group-hover:scale-100 group-hover:top-5 duration-200">
               <a
                 href="/admin"
                 className={`hover:underline ${

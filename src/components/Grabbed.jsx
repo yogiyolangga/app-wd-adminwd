@@ -15,7 +15,17 @@ import {
 import { FaSort } from "react-icons/fa6";
 import { TbListDetails } from "react-icons/tb";
 import { BiLoaderCircle } from "react-icons/bi";
-import { GrabSection } from "./Dashboard";
+
+import grab from "../assets/grab.png";
+import bca from "../assets/bca.png";
+import bni from "../assets/bni.png";
+import bri from "../assets/bri.png";
+import mandiri from "../assets/mandiri.png";
+import danamon from "../assets/danamon.png";
+import dana from "../assets/dana.png";
+import ovo from "../assets/ovo.png";
+import gopay from "../assets/gopay.png";
+import all from "../assets/all.png";
 
 export default function Grabbed() {
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -214,22 +224,70 @@ const Data = ({
   const firstPostIndex = lastPostIndex - postPerPage;
   const currentData = sortedData.slice(firstPostIndex, lastPostIndex);
 
-  let pages = [];
+  const totalPages = Math.ceil(dataWdFromDb.length / postPerPage);
 
-  for (let i = 1; i <= Math.ceil(sortedData.length / postPerPage); i++) {
-    pages.push(i);
-  }
+  const [maxPagesToShow] = useState(5);
 
-  const prevPage = () => {
+  const getPageNumbers = () => {
+    let pageNumbers = [];
+
+    if (totalPages <= maxPagesToShow) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      if (currentPage <= 2) {
+        // Jika halaman saat ini di awal (1, 2, 3, ...)
+        for (let i = 1; i <= maxPagesToShow; i++) {
+          pageNumbers.push(i);
+        }
+        if (totalPages > maxPagesToShow) {
+          pageNumbers.push("..."); // Tambahkan elipsis untuk menunjukkan halaman lebih lanjut
+          pageNumbers.push(totalPages);
+        }
+      } else if (currentPage >= totalPages - 1) {
+        // Jika halaman saat ini di akhir (..., 98, 99, 100)
+        pageNumbers.push(1);
+        pageNumbers.push("..."); // Tambahkan elipsis untuk menunjukkan halaman sebelumnya
+        for (let i = totalPages - maxPagesToShow + 1; i <= totalPages; i++) {
+          pageNumbers.push(i);
+        }
+      } else {
+        // Jika halaman saat ini di tengah (misalnya 6, 7, 8, ..., 95, 96, 97)
+        pageNumbers.push(1);
+        pageNumbers.push("..."); // Tambahkan elipsis untuk menunjukkan halaman sebelumnya
+
+        // Menentukan range halaman sebelum dan sesudah currentPage
+        const startPage = currentPage - 1;
+        const endPage = currentPage + 1;
+
+        for (let i = startPage; i <= endPage; i++) {
+          pageNumbers.push(i);
+        }
+
+        pageNumbers.push("..."); // Tambahkan elipsis untuk menunjukkan halaman lebih lanjut
+        pageNumbers.push(totalPages);
+      }
+    }
+
+    return pageNumbers;
+  };
+
+  const handlePrevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
   };
 
-  const nextPage = () => {
-    if (currentPage < Math.ceil(filteredData.length / postPerPage)) {
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
+  };
+
+  const handlePostPerPage = (value) => {
+    setPostPerPage(value);
+    setCurrentPage(1);
   };
 
   const handleSelectAllChange = () => {
@@ -279,6 +337,7 @@ const Data = ({
       const response = await Axios.put(`${apiUrl}/adminwd/cancelwd/${id}`);
       if (response.data.success) {
         setDataWdFromDb(dataWdFromDb.filter((item) => item.data_wd_id != id));
+        setSelectedItems([]);
       } else if (response.data.error) {
         alert("Error from server!");
         console.log(response.data.error);
@@ -298,6 +357,7 @@ const Data = ({
       const response = await Axios.put(`${apiUrl}/adminwd/confirmwd/${id}`);
       if (response.data.success) {
         setDataWdFromDb(dataWdFromDb.filter((item) => item.data_wd_id != id));
+        setSelectedItems([]);
       } else if (response.data.error) {
         alert("Error from server!");
         console.log(response.data.error);
@@ -317,6 +377,7 @@ const Data = ({
       const response = await Axios.put(`${apiUrl}/adminwd/rejectwd/${id}`);
       if (response.data.success) {
         setDataWdFromDb(dataWdFromDb.filter((item) => item.data_wd_id != id));
+        setSelectedItems([]);
       } else if (response.data.error) {
         alert("Error from server!");
         console.log(response.data.error);
@@ -355,6 +416,10 @@ const Data = ({
       console.log(error);
     }
   };
+
+  function copyText(value) {
+    navigator.clipboard.writeText(value);
+  }
 
   return (
     <>
@@ -478,62 +543,70 @@ const Data = ({
                       </div>
                     </td>
                     <td className="pl-1 pr-3 py-4">{item.member_username}</td>
-                    <td className="px-6 py-4">{item.agent_name}</td>
-                    <td className="px-6 py-4">{item.account_name}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 py-1">{item.agent_name}</td>
+                    <td className="px-3 py-1">{item.account_name}</td>
+                    <td
+                      className="px-3 py-1 cursor-pointer active:opacity-70"
+                      onClick={() => copyText(item.account_number)}
+                    >
                       {`${item.bank_name} | ${item.account_number}`}
                     </td>
-                    <td className="px-6 py-4 kanit-medium text-xl">
+                    <td
+                      className="px-3 py-1 kanit-medium text-xl cursor-pointer active:opacity-70"
+                      onClick={() => copyText(item.nominal)}
+                    >
                       {rupiah.format(item.nominal)}
                     </td>
                     {loadingAction ? (
-                      <td className="px-6 py-4 flex items-center justify-center">
+                      <td className="px-3 py-1 flex items-center justify-center">
                         <BiLoaderCircle className="text-2xl animate-spin" />
                       </td>
                     ) : (
-                      <td className="px-6 py-4 flex gap-1">
-                        <button
-                          className="py-1 px-2 rounded-md bg-[#602BF8] hover:bg-opacity-80"
-                          title="Confirm"
-                          onClick={() => {
-                            const confirm = window.confirm(
-                              "Withdraw sudah diproses ?"
-                            );
-                            if (confirm) {
-                              confirmDataGrab(item.data_wd_id);
-                            }
-                          }}
-                        >
-                          <GiConfirmed className="text-zinc-100" />
-                        </button>
-                        <button
-                          className="py-1 px-2 rounded-md bg-[#2bf83c] hover:bg-opacity-80"
-                          title="Cancel"
-                          onClick={() => {
-                            const confirm = window.confirm(
-                              "Yakin ingin cancel ?"
-                            );
-                            if (confirm) {
-                              cancelDataGrab(item.data_wd_id);
-                            }
-                          }}
-                        >
-                          <PiHandCoinsFill className="text-zinc-900" />
-                        </button>
-                        <button
-                          className="py-1 px-2 rounded-md bg-[#f82b2b] hover:bg-opacity-80"
-                          title="Reject"
-                          onClick={() => {
-                            const confirm = window.confirm(
-                              "Yakin ingin reject ?"
-                            );
-                            if (confirm) {
-                              rejectDataGrab(item.data_wd_id);
-                            }
-                          }}
-                        >
-                          <GiCancel className="text-zinc-100" />
-                        </button>
+                      <td className="px-3 py-1">
+                        <div className="flex gap-1">
+                          <button
+                            className="py-1 px-2 rounded-md bg-[#602BF8] hover:bg-opacity-80"
+                            title="Confirm"
+                            onClick={() => {
+                              const confirm = window.confirm(
+                                "Withdraw sudah diproses ?"
+                              );
+                              if (confirm) {
+                                confirmDataGrab(item.data_wd_id);
+                              }
+                            }}
+                          >
+                            <GiConfirmed className="text-zinc-100" />
+                          </button>
+                          <button
+                            className="py-1 px-2 rounded-md bg-[#2bf83c] hover:bg-opacity-80"
+                            title="Cancel"
+                            onClick={() => {
+                              const confirm = window.confirm(
+                                "Yakin ingin cancel ?"
+                              );
+                              if (confirm) {
+                                cancelDataGrab(item.data_wd_id);
+                              }
+                            }}
+                          >
+                            <PiHandCoinsFill className="text-zinc-900" />
+                          </button>
+                          <button
+                            className="py-1 px-2 rounded-md bg-[#f82b2b] hover:bg-opacity-80"
+                            title="Reject"
+                            onClick={() => {
+                              const confirm = window.confirm(
+                                "Yakin ingin reject ?"
+                              );
+                              if (confirm) {
+                                rejectDataGrab(item.data_wd_id);
+                              }
+                            }}
+                          >
+                            <GiCancel className="text-zinc-100" />
+                          </button>
+                        </div>
                       </td>
                     )}
                   </tr>
@@ -567,16 +640,17 @@ const Data = ({
                   <option value="30">30 / page</option>
                   <option value="40">40 / page</option>
                   <option value="50">50 / page</option>
+                  <option value="100">100 / page</option>
                 </select>
                 <li>
                   <div
                     className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg cursor-pointer"
-                    onClick={() => prevPage()}
+                    onClick={handlePrevPage}
                   >
                     <TbPlayerTrackPrevFilled />
                   </div>
                 </li>
-                {pages.map((page, index) => (
+                {getPageNumbers().map((page, index) => (
                   <li key={index}>
                     <div
                       className={`flex items-center justify-center px-3 h-8 leading-tight cursor-pointer border border-gray-300 ${
@@ -584,7 +658,9 @@ const Data = ({
                           ? "bg-[#602BF8] text-white"
                           : "bg-white text-gray-500"
                       }`}
-                      onClick={() => setCurrentPage(page)}
+                      onClick={() => {
+                        if (page !== "...") setCurrentPage(page);
+                      }}
                     >
                       {page}
                     </div>
@@ -593,7 +669,7 @@ const Data = ({
                 <li>
                   <div
                     className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg cursor-pointer"
-                    onClick={() => nextPage()}
+                    onClick={handleNextPage}
                   >
                     <TbPlayerTrackNextFilled />
                   </div>
@@ -686,14 +762,14 @@ const DataDetails = ({ setDataDetails, dataWdFromDb, idDetail, rupiah }) => {
 
   return (
     <>
-      {idDetail === undefined ? (
+      {idDetail === undefined || dataCheck === undefined ? (
         ""
       ) : (
         <div className="p-3 bg-white shadow-md border rounded-md flex flex-col justify-center items-center gap-1">
           <div className="min-w-96 flex px-2 border-b">
             <div className="flex-1 px-2 border-r">Agent</div>
             <div className="flex-1 px-2 kanit-semibold text-xl">
-              {dataCheck.agent_name}
+              {dataCheck.agent_name === undefined ? "" : dataCheck.agent_name}
             </div>
           </div>
           <div className="min-w-96 flex px-2 border-b">
@@ -744,6 +820,166 @@ const DataDetails = ({ setDataDetails, dataWdFromDb, idDetail, rupiah }) => {
           </div>
         </div>
       )}
+    </>
+  );
+};
+
+const GrabSection = ({ adminId, apiUrl, setLoadingGrab, getData }) => {
+  const [amount, setAmount] = useState(1000);
+
+  const handleGrab = async (bankName) => {
+    setLoadingGrab(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      const response = await Axios.put(`${apiUrl}/adminwd/grabbing`, {
+        amount,
+        bankName,
+        adminId,
+      });
+      if (response.data.success) {
+        getData();
+      } else if (response.data.error) {
+        alert("Gagal mengambil data!");
+        console.log(response.data.error);
+      } else {
+        alert("Terjadi kesalahan");
+        console.log("Something error!");
+      }
+      setLoadingGrab(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return (
+    <>
+      <Amout amount={amount} setAmount={setAmount} />
+      <div className="w-full flex flex-wrap gap-4 justify-evenly border rounded-md py-5">
+        <GrabButton
+          handleGrab={handleGrab}
+          amount={amount}
+          bankName={"bca"}
+          src={bca}
+        />
+        <GrabButton
+          handleGrab={handleGrab}
+          amount={amount}
+          bankName={"bni"}
+          src={bni}
+        />
+        <GrabButton
+          handleGrab={handleGrab}
+          amount={amount}
+          bankName={"bri"}
+          src={bri}
+        />
+        <GrabButton
+          handleGrab={handleGrab}
+          amount={amount}
+          bankName={"mandiri"}
+          src={mandiri}
+        />
+        <GrabButton
+          handleGrab={handleGrab}
+          amount={amount}
+          bankName={"danamon"}
+          src={danamon}
+        />
+        <GrabButton
+          handleGrab={handleGrab}
+          amount={amount}
+          bankName={"dana"}
+          src={dana}
+        />
+        <GrabButton
+          handleGrab={handleGrab}
+          amount={amount}
+          bankName={"ovo"}
+          src={ovo}
+        />
+        <GrabButton
+          handleGrab={handleGrab}
+          amount={amount}
+          bankName={"gopay"}
+          src={gopay}
+        />
+        <GrabButton
+          handleGrab={handleGrab}
+          amount={amount}
+          bankName={"all"}
+          src={all}
+        />
+      </div>
+    </>
+  );
+};
+
+const Amout = ({ amount, setAmount }) => {
+  return (
+    <>
+      <div className="w-full flex flex-col gap-3 pb-3 px-6">
+        {/* <div className="w-full h-[10px] rounded-full bg-zinc-500">
+          <div className="w-1/2 h-[10px] rounded-full bg-[#602BF8]"></div>
+        </div> */}
+        <div className="w-full flex gap-3">
+          <div
+            className={`p-3 rounded-full w-8 h-8 flex justify-center items-center font-bold text-white hover:scale-105 duration-100 cursor-pointer ${
+              amount === 3 ? "bg-[#602BF8]" : "bg-[#999899]"
+            }`}
+            onClick={() => setAmount(3)}
+          >
+            3
+          </div>
+          <div
+            className={`p-3 rounded-full w-8 h-8 flex justify-center items-center font-bold text-white hover:scale-105 duration-100 cursor-pointer ${
+              amount === 5 ? "bg-[#602BF8]" : "bg-[#999899]"
+            }`}
+            onClick={() => setAmount(5)}
+          >
+            5
+          </div>
+          <div
+            className={`p-3 rounded-full w-8 h-8 flex justify-center items-center font-bold text-white hover:scale-105 duration-100 cursor-pointer ${
+              amount === 10 ? "bg-[#602BF8]" : "bg-[#999899]"
+            }`}
+            onClick={() => setAmount(10)}
+          >
+            10
+          </div>
+          <div
+            className={`p-3 rounded-full w-8 h-8 flex justify-center items-center font-bold text-white hover:scale-105 duration-100 cursor-pointer ${
+              amount === 20 ? "bg-[#602BF8]" : "bg-[#999899]"
+            }`}
+            onClick={() => setAmount(20)}
+          >
+            20
+          </div>
+          <div
+            className={`p-3 rounded-full w-8 h-8 flex justify-center items-center font-bold text-white hover:scale-105 duration-100 cursor-pointer ${
+              amount === 1000 ? "bg-[#602BF8]" : "bg-[#999899]"
+            }`}
+            onClick={() => setAmount(1000)}
+          >
+            All
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+const GrabButton = ({ src, handleGrab, bankName }) => {
+  return (
+    <>
+      <div
+        className="px-3 py-3 w-[200px] min-h-20 rounded-xl bg-[#ffffff] cursor-pointer hover:scale-105 duration-100 shadow-xl flex justify-center items-center active:scale-95"
+        onClick={() => handleGrab(bankName)}
+      >
+        <div className="flex w-full items-center justify-center gap-1">
+          <img src={src} alt="Bank" className="w-[90px] h-auto" />
+          <img src={grab} alt="Grab" className="w-[40px] h-auto" />
+        </div>
+      </div>
     </>
   );
 };

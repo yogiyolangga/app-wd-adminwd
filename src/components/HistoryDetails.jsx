@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "./Header";
 import { Sidebar } from "./Sidebar";
 import Loading from "./Loading";
@@ -14,9 +14,9 @@ import { PiHandCoinsFill } from "react-icons/pi";
 import { BiLoaderCircle } from "react-icons/bi";
 import { FaSort } from "react-icons/fa6";
 import { TbListDetails } from "react-icons/tb";
-import TotalWdAgent from "./TotalWdAgent";
 
-export default function DataProcess() {
+export default function HistoryDetails() {
+  const closedId = useParams();
   const [dataDetails, setDataDetails] = useState(false);
   const [idDetail, setIdDetail] = useState();
   const [loading, setLoading] = useState(false);
@@ -29,7 +29,7 @@ export default function DataProcess() {
   const [fullname, setFullname] = useState("");
   const [adminId, setAdminId] = useState("");
 
-  const [dataWdFromDb, setDataWdFromDb] = useState([]);
+  const [dataHistoryDetails, setDataHistoryDetails] = useState([]);
 
   useEffect(() => {
     if (!userLogin || !token) {
@@ -37,13 +37,15 @@ export default function DataProcess() {
     }
   }, []);
 
-  const getDataWdFromDb = async () => {
+  const getDataWdHistory = async () => {
     setLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 200));
-      const response = await Axios.get(`${apiUrl}/adminwd/datawd`);
+      const response = await Axios.get(
+        `${apiUrl}/adminwd/history/${closedId.id}`
+      );
       if (response.data.success) {
-        setDataWdFromDb(response.data.result);
+        setDataHistoryDetails(response.data.result);
       } else if (response.data.error) {
         console.log(response.data.error);
       } else {
@@ -80,7 +82,7 @@ export default function DataProcess() {
 
   useEffect(() => {
     getAdminData();
-    getDataWdFromDb();
+    getDataWdHistory();
   }, []);
 
   useEffect(() => {
@@ -115,19 +117,16 @@ export default function DataProcess() {
           <Data
             setDataDetails={setDataDetails}
             setIdDetail={setIdDetail}
-            dataWdFromDb={dataWdFromDb}
+            dataHistoryDetails={dataHistoryDetails}
             loading={loading}
             rupiah={rupiah}
             apiUrl={apiUrl}
             getAdminData={getAdminData}
-            getDataWdFromDb={getDataWdFromDb}
-            setDataWdFromDb={setDataWdFromDb}
+            getDataWdHistory={getDataWdHistory}
+            setDataHistoryDetails={setDataHistoryDetails}
             userLogin={userLogin}
             adminId={adminId}
           />
-        </div>
-        <div className="px-6 mx-auto">
-          <TotalWdAgent dataWdFromDb={dataWdFromDb} />
         </div>
       </div>
       <div
@@ -137,7 +136,7 @@ export default function DataProcess() {
       >
         <DataDetails
           setDataDetails={setDataDetails}
-          dataWdFromDb={dataWdFromDb}
+          dataHistoryDetails={dataHistoryDetails}
           idDetail={idDetail}
           rupiah={rupiah}
           fullname={fullname}
@@ -150,17 +149,17 @@ export default function DataProcess() {
 const Data = ({
   setDataDetails,
   setIdDetail,
-  dataWdFromDb,
+  dataHistoryDetails,
   loading,
   rupiah,
   apiUrl,
-  getDataWdFromDb,
-  setDataWdFromDb,
+  getDataWdHistory,
+  setDataHistoryDetails,
   userLogin,
   adminId,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [postPerPage, setPostPerPage] = useState(5);
+  const [postPerPage, setPostPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -170,25 +169,29 @@ const Data = ({
   const [loadingAction, setLoadingAction] = useState(false);
 
   useEffect(() => {
-    const filtered = dataWdFromDb.filter((item) => item.status != "pulled");
+    const filtered = dataHistoryDetails.filter(
+      (item) => item.status != "pulled"
+    );
     setByStatusData(filtered);
-  }, [dataWdFromDb]);
+  }, [dataHistoryDetails]);
 
   const handleFilterByStatus = (status) => {
     if (status === "all") {
-      const filtered = dataWdFromDb.filter((item) => item.status != "pulled");
+      const filtered = dataHistoryDetails.filter(
+        (item) => item.status != "pulled"
+      );
       setByStatusData(filtered);
       setStatusData(status);
-      setCurrentPage(1);
     } else {
-      const filtered = dataWdFromDb.filter((item) => item.status === status);
+      const filtered = dataHistoryDetails.filter(
+        (item) => item.status === status
+      );
       setByStatusData(filtered);
       setStatusData(status);
-      setCurrentPage(1);
     }
   };
 
-  const validateButtonClosed = dataWdFromDb.filter(
+  const validateButtonClosed = dataHistoryDetails.filter(
     (item) => item.status === "pending" || item.status === "grab"
   );
 
@@ -235,7 +238,7 @@ const Data = ({
   const firstPostIndex = lastPostIndex - postPerPage;
   const currentData = sortedData.slice(firstPostIndex, lastPostIndex);
 
-  const totalPages = Math.ceil(byStatusData.length / postPerPage);
+  const totalPages = Math.ceil(dataHistoryDetails.length / postPerPage);
 
   const [maxPagesToShow] = useState(5);
 
@@ -347,7 +350,7 @@ const Data = ({
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const response = await Axios.put(`${apiUrl}/adminwd/cancelwd/${id}`);
       if (response.data.success) {
-        getDataWdFromDb();
+        getDataWdHistory();
         setSelectedItems([]);
       } else if (response.data.error) {
         alert("Error from server!");
@@ -367,7 +370,7 @@ const Data = ({
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const response = await Axios.put(`${apiUrl}/adminwd/confirmwd/${id}`);
       if (response.data.success) {
-        getDataWdFromDb();
+        getDataWdHistory();
         setSelectedItems([]);
       } else if (response.data.error) {
         alert("Error from server!");
@@ -387,7 +390,7 @@ const Data = ({
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const response = await Axios.put(`${apiUrl}/adminwd/rejectwd/${id}`);
       if (response.data.success) {
-        getDataWdFromDb();
+        getDataWdHistory();
         setSelectedItems([]);
       } else if (response.data.error) {
         alert("Error from server!");
@@ -401,7 +404,7 @@ const Data = ({
     }
   };
 
-  const dataCanUserProcess = dataWdFromDb.filter(
+  const dataCanUserProcess = dataHistoryDetails.filter(
     (item) => item.admin_username === userLogin
   );
 
@@ -414,35 +417,6 @@ const Data = ({
   const invalidIds = selectedItems.filter(
     (id) => !idsInDataUserCanProcess.includes(id)
   );
-
-  const handleMultiple = async (action) => {
-    if (invalidIds.length > 0) {
-      alert("You Can't Process This Data");
-      setSelectedItems([]);
-      return;
-    } else {
-      setLoadingAction(true);
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        const response = await Axios.put(`${apiUrl}/adminwd/multipleaction`, {
-          selectedItems,
-          action,
-        });
-        if (response.data.success) {
-          getDataWdFromDb();
-          setSelectedItems([]);
-        } else if (response.data.error) {
-          alert("Error from server!");
-          console.log(response.data.error);
-        } else {
-          console.log("Something error");
-        }
-        setLoadingAction(false);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
 
   function getToday() {
     let today = new Date();
@@ -482,26 +456,21 @@ const Data = ({
     }
   }
 
-  const handleClosing = async () => {
-    setLoadingAction(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const response = await Axios.put(`${apiUrl}/adminwd/closing`, {
-        adminId,
-      });
-      if (response.data.success) {
-        alert("Closing Success!");
-        getDataWdFromDb();
-      } else if (response.data.error) {
-        console.log(response.data.error);
-      } else {
-        console.log("Something Error");
-      }
+  const formatDate = (isoString) => {
+    const date = new Date(isoString);
 
-      setLoadingAction(false);
-    } catch (error) {
-      console.log(error);
-    }
+    // Ambil tahun, bulan, dan hari (UTC)
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // getUTCMonth() dimulai dari 0
+    const day = String(date.getUTCDate()).padStart(2, "0");
+
+    // Ambil jam, menit, dan detik (UTC)
+    const hours = String(date.getUTCHours()).padStart(2, "0");
+    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+    const seconds = String(date.getUTCSeconds()).padStart(2, "0");
+
+    // Gabungkan menjadi format yang diinginkan
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   };
 
   return (
@@ -513,8 +482,16 @@ const Data = ({
           </div>
         ) : (
           <div className="relative overflow-x-auto shadow-md rounded-md">
-            <div className="flex-1 flex justify-start px-2 items-center">
+            <div className="flex justify-between px-2 items-center">
               <span className="text-sm kanit-medium">{today}</span>
+              <div>
+                <span className="kanit-regular">Closing Time : </span>
+                <span className="text-sm kanit-medium underline">
+                  {dataHistoryDetails.length < 1
+                    ? "time"
+                    : formatDate(dataHistoryDetails[0].closed_timestamp)}
+                </span>
+              </div>
             </div>
             <div className="flex flex-col md:flex-row px-2 py-1 justify-between items-center gap-2">
               <div className="flex-1">
@@ -540,18 +517,6 @@ const Data = ({
                   onClick={() => handleFilterByStatus("success")}
                 >
                   Success
-                </button>
-                <button
-                  className="w-24 flex justify-center items-center border p-1 rounded-md shadow-md bg-yellow-300"
-                  onClick={() => handleFilterByStatus("grab")}
-                >
-                  OnProcess
-                </button>
-                <button
-                  className="w-20 flex justify-center items-center border p-1 rounded-md shadow-md bg-orange-300"
-                  onClick={() => handleFilterByStatus("pending")}
-                >
-                  Pending
                 </button>
                 <button
                   className="w-20 flex justify-center items-center border p-1 rounded-md shadow-md bg-red-600 text-white"
@@ -811,108 +776,20 @@ const Data = ({
             </nav>
           </div>
         )}
-        {loadingAction ? (
-          <div>
-            <BiLoaderCircle className="text-xl animate-spin" />
-          </div>
-        ) : (
-          <div className={`flex justify-between gap-2 p-2`}>
-            <div
-              className={`flex gap-1.5 ${
-                selectedItems.length < 1 ? "opacity-30" : ""
-              }`}
-            >
-              <button
-                className={`py-1 px-2 rounded-md bg-[#602BF8] hover:bg-opacity-80 ${
-                  selectedItems.length < 1 ? "cursor-not-allowed" : ""
-                }`}
-                disabled={selectedItems.length < 1 ? true : false}
-                title="Confirm"
-                onClick={() => {
-                  const confirm = window.confirm("Confirm Yang di Pilih ?");
-                  if (confirm) {
-                    handleMultiple("success");
-                  }
-                }}
-              >
-                <GiConfirmed className="text-zinc-100" />
-              </button>
-              <button
-                className={`py-1 px-2 rounded-md bg-[#2bf83c] hover:bg-opacity-80 ${
-                  selectedItems.length < 1 ? "cursor-not-allowed" : ""
-                }`}
-                disabled={selectedItems.length < 1 ? true : false}
-                title="Cancel"
-                onClick={() => {
-                  const confirm = window.confirm("Cancel Grab Yang di Pilih ?");
-                  if (confirm) {
-                    handleMultiple("pending");
-                  }
-                }}
-              >
-                <PiHandCoinsFill className="text-zinc-900" />
-              </button>
-              <button
-                className={`py-1 px-2 rounded-md bg-[#f82b2b] hover:bg-opacity-80 ${
-                  selectedItems.length < 1 ? "cursor-not-allowed" : ""
-                }`}
-                disabled={selectedItems.length < 1 ? true : false}
-                title="Reject"
-                onClick={() => {
-                  const confirm = window.confirm("Reject Yang di Pilih ?");
-                  if (confirm) {
-                    handleMultiple("reject");
-                  }
-                }}
-              >
-                <GiCancel className="text-zinc-100" />
-              </button>
-            </div>
-            <div
-              className={`${
-                validateButtonClosed.length > 0 ? "opacity-30" : ""
-              }`}
-            >
-              {loadingAction ? (
-                <div>
-                  <BiLoaderCircle className="text-xl animate-spin" />
-                </div>
-              ) : (
-                <button
-                  className={`flex items-center gap-1 text-zinc-100 py-1 px-2 rounded-md bg-[#602BF8] hover:bg-opacity-80 ${
-                    validateButtonClosed.length > 0 || currentData.length < 1
-                      ? "cursor-not-allowed opacity-30"
-                      : ""
-                  }`}
-                  disabled={
-                    validateButtonClosed.length > 0 || currentData.length < 1
-                      ? true
-                      : false
-                  }
-                  title="Closing"
-                  onClick={() => {
-                    const confirm = window.confirm(
-                      "Closing Data ? Pastikan tidak ada data pending atau on process"
-                    );
-                    if (confirm) {
-                      handleClosing();
-                    }
-                  }}
-                >
-                  Close
-                  <GiConfirmed className="text-zinc-100" />
-                </button>
-              )}
-            </div>
-          </div>
-        )}
       </div>
     </>
   );
 };
 
-const DataDetails = ({ setDataDetails, dataWdFromDb, idDetail, rupiah }) => {
-  const dataCheck = dataWdFromDb.find((item) => item.data_wd_id === idDetail);
+const DataDetails = ({
+  setDataDetails,
+  dataHistoryDetails,
+  idDetail,
+  rupiah,
+}) => {
+  const dataCheck = dataHistoryDetails.find(
+    (item) => item.data_wd_id === idDetail
+  );
 
   const formatDate = (isoString) => {
     const date = new Date(isoString);

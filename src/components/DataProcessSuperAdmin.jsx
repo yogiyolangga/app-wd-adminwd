@@ -16,7 +16,7 @@ import { FaSort } from "react-icons/fa6";
 import { TbListDetails } from "react-icons/tb";
 import TotalWdAgent from "./TotalWdAgent";
 
-export default function DataProcess() {
+export default function DataProcessSuperAdmin() {
   const [dataDetails, setDataDetails] = useState(false);
   const [idDetail, setIdDetail] = useState();
   const [loading, setLoading] = useState(false);
@@ -27,7 +27,6 @@ export default function DataProcess() {
   const navigate = useNavigate();
 
   const [fullname, setFullname] = useState("");
-  const [adminId, setAdminId] = useState("");
 
   const [dataWdFromDb, setDataWdFromDb] = useState([]);
 
@@ -65,7 +64,6 @@ export default function DataProcess() {
       );
       if (response.data.success) {
         setFullname(response.data.result[0].fullname);
-        setAdminId(response.data.result[0].admin_id);
       } else if (response.data.error) {
         console.log(response.data.error);
       } else {
@@ -123,7 +121,6 @@ export default function DataProcess() {
             getDataWdFromDb={getDataWdFromDb}
             setDataWdFromDb={setDataWdFromDb}
             userLogin={userLogin}
-            adminId={adminId}
           />
         </div>
         <div className="px-6 mx-auto">
@@ -155,9 +152,7 @@ const Data = ({
   rupiah,
   apiUrl,
   getDataWdFromDb,
-  setDataWdFromDb,
   userLogin,
-  adminId,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [postPerPage, setPostPerPage] = useState(5);
@@ -179,18 +174,12 @@ const Data = ({
       const filtered = dataWdFromDb.filter((item) => item.status != "pulled");
       setByStatusData(filtered);
       setStatusData(status);
-      setCurrentPage(1);
     } else {
       const filtered = dataWdFromDb.filter((item) => item.status === status);
       setByStatusData(filtered);
       setStatusData(status);
-      setCurrentPage(1);
     }
   };
-
-  const validateButtonClosed = dataWdFromDb.filter(
-    (item) => item.status === "pending" || item.status === "grab"
-  );
 
   const filteredData = byStatusData.filter((item) => {
     const searchTermLower = searchTerm.toLowerCase();
@@ -401,46 +390,26 @@ const Data = ({
     }
   };
 
-  const dataCanUserProcess = dataWdFromDb.filter(
-    (item) => item.admin_username === userLogin
-  );
-
-  // Mengambil semua nilai id dari data1
-  const idsInDataUserCanProcess = dataCanUserProcess.map(
-    (item) => item.data_wd_id
-  );
-
-  // Mengecek jika ada angka dalam selectedData yang tidak ada di data1
-  const invalidIds = selectedItems.filter(
-    (id) => !idsInDataUserCanProcess.includes(id)
-  );
-
   const handleMultiple = async (action) => {
-    if (invalidIds.length > 0) {
-      alert("You Can't Process This Data");
-      setSelectedItems([]);
-      return;
-    } else {
-      setLoadingAction(true);
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        const response = await Axios.put(`${apiUrl}/adminwd/multipleaction`, {
-          selectedItems,
-          action,
-        });
-        if (response.data.success) {
-          getDataWdFromDb();
-          setSelectedItems([]);
-        } else if (response.data.error) {
-          alert("Error from server!");
-          console.log(response.data.error);
-        } else {
-          console.log("Something error");
-        }
-        setLoadingAction(false);
-      } catch (error) {
-        console.log(error);
+    setLoadingAction(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await Axios.put(`${apiUrl}/adminwd/multipleaction`, {
+        selectedItems,
+        action,
+      });
+      if (response.data.success) {
+        getDataWdFromDb();
+        setSelectedItems([]);
+      } else if (response.data.error) {
+        alert("Error from server!");
+        console.log(response.data.error);
+      } else {
+        console.log("Something error");
       }
+      setLoadingAction(false);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -481,28 +450,6 @@ const Data = ({
       return string.substring(0, maxLength) + "...";
     }
   }
-
-  const handleClosing = async () => {
-    setLoadingAction(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const response = await Axios.put(`${apiUrl}/adminwd/closing`, {
-        adminId,
-      });
-      if (response.data.success) {
-        alert("Closing Success!");
-        getDataWdFromDb();
-      } else if (response.data.error) {
-        console.log(response.data.error);
-      } else {
-        console.log("Something Error");
-      }
-
-      setLoadingAction(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   return (
     <>
@@ -692,11 +639,7 @@ const Data = ({
                       {loadingAction ? (
                         <BiLoaderCircle className="text-2xl animate-spin" />
                       ) : (
-                        <div
-                          className={`flex justify-center gap-1 ${
-                            userLogin === item.admin_username ? "" : "hidden"
-                          }`}
-                        >
+                        <div className={`flex justify-center gap-1`}>
                           <button
                             className="py-1 px-2 rounded-md bg-[#602BF8] hover:bg-opacity-80"
                             title="Confirm"
@@ -816,94 +759,56 @@ const Data = ({
             <BiLoaderCircle className="text-xl animate-spin" />
           </div>
         ) : (
-          <div className={`flex justify-between gap-2 p-2`}>
-            <div
-              className={`flex gap-1.5 ${
-                selectedItems.length < 1 ? "opacity-30" : ""
+          <div
+            className={`flex justify-start gap-2 p-2 ${
+              selectedItems.length < 1 ? "opacity-30" : ""
+            }`}
+          >
+            <button
+              className={`py-1 px-2 rounded-md bg-[#602BF8] hover:bg-opacity-80 ${
+                selectedItems.length < 1 ? "cursor-not-allowed" : ""
               }`}
+              disabled={selectedItems.length < 1 ? true : false}
+              title="Confirm"
+              onClick={() => {
+                const confirm = window.confirm("Confirm Yang di Pilih ?");
+                if (confirm) {
+                  handleMultiple("success");
+                }
+              }}
             >
-              <button
-                className={`py-1 px-2 rounded-md bg-[#602BF8] hover:bg-opacity-80 ${
-                  selectedItems.length < 1 ? "cursor-not-allowed" : ""
-                }`}
-                disabled={selectedItems.length < 1 ? true : false}
-                title="Confirm"
-                onClick={() => {
-                  const confirm = window.confirm("Confirm Yang di Pilih ?");
-                  if (confirm) {
-                    handleMultiple("success");
-                  }
-                }}
-              >
-                <GiConfirmed className="text-zinc-100" />
-              </button>
-              <button
-                className={`py-1 px-2 rounded-md bg-[#2bf83c] hover:bg-opacity-80 ${
-                  selectedItems.length < 1 ? "cursor-not-allowed" : ""
-                }`}
-                disabled={selectedItems.length < 1 ? true : false}
-                title="Cancel"
-                onClick={() => {
-                  const confirm = window.confirm("Cancel Grab Yang di Pilih ?");
-                  if (confirm) {
-                    handleMultiple("pending");
-                  }
-                }}
-              >
-                <PiHandCoinsFill className="text-zinc-900" />
-              </button>
-              <button
-                className={`py-1 px-2 rounded-md bg-[#f82b2b] hover:bg-opacity-80 ${
-                  selectedItems.length < 1 ? "cursor-not-allowed" : ""
-                }`}
-                disabled={selectedItems.length < 1 ? true : false}
-                title="Reject"
-                onClick={() => {
-                  const confirm = window.confirm("Reject Yang di Pilih ?");
-                  if (confirm) {
-                    handleMultiple("reject");
-                  }
-                }}
-              >
-                <GiCancel className="text-zinc-100" />
-              </button>
-            </div>
-            <div
-              className={`${
-                validateButtonClosed.length > 0 ? "opacity-30" : ""
+              <GiConfirmed className="text-zinc-100" />
+            </button>
+            <button
+              className={`py-1 px-2 rounded-md bg-[#2bf83c] hover:bg-opacity-80 ${
+                selectedItems.length < 1 ? "cursor-not-allowed" : ""
               }`}
+              disabled={selectedItems.length < 1 ? true : false}
+              title="Cancel"
+              onClick={() => {
+                const confirm = window.confirm("Cancel Grab Yang di Pilih ?");
+                if (confirm) {
+                  handleMultiple("pending");
+                }
+              }}
             >
-              {loadingAction ? (
-                <div>
-                  <BiLoaderCircle className="text-xl animate-spin" />
-                </div>
-              ) : (
-                <button
-                  className={`flex items-center gap-1 text-zinc-100 py-1 px-2 rounded-md bg-[#602BF8] hover:bg-opacity-80 ${
-                    validateButtonClosed.length > 0 || currentData.length < 1
-                      ? "cursor-not-allowed opacity-30"
-                      : ""
-                  }`}
-                  disabled={
-                    validateButtonClosed.length > 0 || currentData.length < 1
-                      ? true
-                      : false
-                  }
-                  title="Closing"
-                  onClick={() => {
-                    const confirm = window.confirm(
-                      "Closing Data ? Pastikan tidak ada data pending atau on process"
-                    );
-                    if (confirm) {
-                      handleClosing();
-                    }
-                  }}
-                >
-                  Close
-                  <GiConfirmed className="text-zinc-100" />
-                </button>
-              )}
-            </div>
+              <PiHandCoinsFill className="text-zinc-900" />
+            </button>
+            <button
+              className={`py-1 px-2 rounded-md bg-[#f82b2b] hover:bg-opacity-80 ${
+                selectedItems.length < 1 ? "cursor-not-allowed" : ""
+              }`}
+              disabled={selectedItems.length < 1 ? true : false}
+              title="Reject"
+              onClick={() => {
+                const confirm = window.confirm("Reject Yang di Pilih ?");
+                if (confirm) {
+                  handleMultiple("reject");
+                }
+              }}
+            >
+              <GiCancel className="text-zinc-100" />
+            </button>
           </div>
         )}
       </div>

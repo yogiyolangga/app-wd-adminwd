@@ -185,12 +185,11 @@ const Widget = ({ todayRequest, pendingRequest, processRequest }) => {
   );
 };
 
-export const GrabSection = ({
+const GrabSection = ({
   adminId,
   apiUrl,
   setLoadingGrab,
   navigate,
-  getData,
 }) => {
   const [amount, setAmount] = useState(1000);
   const handleGrab = async (bankName) => {
@@ -204,7 +203,6 @@ export const GrabSection = ({
       });
       if (response.data.success) {
         navigate("/grabbed");
-        getData();
       } else if (response.data.error) {
         alert("Gagal mengambil data!");
         console.log(response.data.error);

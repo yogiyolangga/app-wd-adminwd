@@ -17,16 +17,16 @@ import { TiCancelOutline } from "react-icons/ti";
 import Loading from "./Loading";
 import { useNavigate } from "react-router-dom";
 
-export default function Admin() {
+export default function Agent() {
   const apiUrl = import.meta.env.VITE_API_URL;
   const userLogin = localStorage.getItem("userAdminWd");
   const token = localStorage.getItem("tokenAdminWd");
   const navigate = useNavigate();
 
   const [fullname, setFullname] = useState("");
-  const [hideAddAdmin, setHideAddAdmin] = useState(true);
+  const [hideAddAgent, setHideAddAgent] = useState(true);
   const [editForm, setEditForm] = useState(false);
-  const [adminList, setAdminList] = useState([]);
+  const [agentList, setAgentList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [getStatus, setGetStatus] = useState("");
   const [editId, setEditId] = useState();
@@ -58,20 +58,20 @@ export default function Admin() {
     getAdminData();
   }, []);
 
-  const getAdmin = async () => {
+  const getAgent = async () => {
     setLoading(true);
     setGetStatus("");
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const response = await Axios.get(`${apiUrl}/admin`);
+      const response = await Axios.get(`${apiUrl}/adminwd/agent`);
 
       if (response.data.error) {
-        setGetStatus(response.data.error);
+        console.log(response.data.error);
       } else if (response.data.success) {
-        setAdminList(response.data.result);
+        setAgentList(response.data.result);
       } else {
-        setGetStatus("Something running error!");
+        console.log("Error geting data");
       }
 
       setLoading(false);
@@ -104,20 +104,19 @@ export default function Admin() {
         <Sidebar />
         <div
           className={`${
-            hideAddAdmin ? "hidden" : ""
+            hideAddAgent ? "hidden" : ""
           } duration-150 border-b pb-1`}
         >
-          <AddAdmin apiUrl={apiUrl} getAdmin={getAdmin} />
+          <AddAdmin apiUrl={apiUrl} getAgent={getAgent} />
         </div>
         <div className="">
           <Admins
             apiUrl={apiUrl}
-            setHideAddAdmin={setHideAddAdmin}
-            hideAddAdmin={hideAddAdmin}
-            adminList={adminList}
+            setHideAddAgent={setHideAddAgent}
+            hideAddAgent={hideAddAgent}
+            agentList={agentList}
             loading={loading}
-            getStatus={getStatus}
-            getAdmin={getAdmin}
+            getAgent={getAgent}
             setEditForm={setEditForm}
             setEditId={setEditId}
           />
@@ -131,61 +130,51 @@ export default function Admin() {
         <EditAdmin
           setEditForm={setEditForm}
           editId={editId}
-          adminList={adminList}
+          agentList={agentList}
           apiUrl={apiUrl}
-          getAdmin={getAdmin}
+          getAgent={getAgent}
         />
       </div>
     </>
   );
 }
 
-const AddAdmin = ({ apiUrl, getAdmin }) => {
-  const [passwordType, setPasswordType] = useState("password");
+const AddAdmin = ({ apiUrl, getAgent }) => {
   const [loading, setLoading] = useState(false);
-  const [fullname, setFullname] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [regisStatus, setRegisStatus] = useState("");
+  const [agentName, setAgentName] = useState("");
+  const [provider, setProvider] = useState("");
+  const [addAgentStatus, setAddAgentStatus] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setRegisStatus("");
+    setAddAgentStatus("");
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      const spaceRegex = /\s/;
-
-      if (username.length < 5) {
-        setRegisStatus("Username minimal 5 karakter ya!");
-      } else if (spaceRegex.test(username)) {
-        setRegisStatus("Username Invalid!");
-      } else if (fullname.length < 5) {
-        setRegisStatus("Isi name lengkap yang lengkap :)");
-      } else if (password.length < 8) {
-        setRegisStatus("Password minimal 8 karakter ya!");
+      if (agentName === "") {
+        setAddAgentStatus("Isi nama agent!");
+      } else if (provider === "") {
+        setAddAgentStatus("Pilih Provider");
       } else {
-        const response = await Axios.post(`${apiUrl}/admin/register`, {
-          fullname: fullname,
-          username: username,
-          password: password,
+        const response = await Axios.post(`${apiUrl}/adminwd/addagent`, {
+          agentName,
+          provider,
         });
 
         if (response.data.success) {
-          setRegisStatus(response.data.success);
-          getAdmin();
+          setAddAgentStatus(response.data.success);
+          getAgent();
         } else if (response.data.error) {
-          setRegisStatus(response.data.error);
+          setAddAgentStatus(response.data.error);
         } else {
           console.log("Something Error");
         }
       }
 
       setLoading(false);
-      setFullname("");
-      setUsername("");
-      setPassword("");
+      setAgentName("");
+      setProvider("");
     } catch (error) {
       console.log(error);
     }
@@ -198,73 +187,47 @@ const AddAdmin = ({ apiUrl, getAdmin }) => {
         className="w-full px-6 flex flex-col justify-center items-center gap-1"
       >
         <div className="w-1/2">
-          <label htmlFor="fullname" className="text-sm pl-2">
-            Nama Lengkap
+          <label htmlFor="agent" className="text-sm pl-2">
+            Agent
           </label>
           <div className="min-w-64 h-10 flex justify-between items-center gap-2 rounded-full border px-2">
             <RiAccountPinCircleFill className="w-[24px] h-[24px] text-zinc-700" />
             <input
               type="text"
-              id="fullname"
+              id="agent"
               className="flex-1 h-full rounded-md outline-none"
-              placeholder="Nama Lengkap"
-              value={fullname}
+              placeholder="Agent"
+              value={agentName}
               onChange={(e) => {
-                setFullname(e.target.value);
+                setAgentName(e.target.value);
               }}
             />
           </div>
         </div>
         <div className="w-1/2">
-          <label htmlFor="username" className="text-sm pl-2">
-            Username
+          <label htmlFor="agentName" className="text-sm pl-2">
+            Provider
           </label>
           <div className="min-w-64 h-10 flex justify-between items-center gap-2 rounded-full border px-2">
             <FaRegCircleUser className="w-[24px] h-[24px] text-zinc-700" />
-            <input
-              type="text"
-              id="username"
+            <select
+              name="provider"
+              id="provider"
+              value={provider}
               className="flex-1 h-full rounded-md outline-none"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => {
-                setUsername(e.target.value);
-              }}
-            />
+              onChange={(e) => setProvider(e.target.value)}
+            >
+              <option value="">Pilih Provider</option>
+              <option value="IDNTOTO">IDNTOTO</option>
+              <option value="IDNSPORT">IDNSPORT</option>
+              <option value="MSC">MSC</option>
+              <option value="NEXUS">NEXUS</option>
+              <option value="SBO">SBO</option>
+            </select>
           </div>
         </div>
         <div className="w-1/2">
-          <label htmlFor="password" className="text-sm pl-2">
-            Password
-          </label>
-          <div className="min-w-64 h-10 flex justify-between items-center gap-2 rounded-full border px-2">
-            <RiLockPasswordFill className="w-[24px] h-[24px] text-zinc-700" />
-            <input
-              type={passwordType}
-              id="password"
-              className="flex-1 h-full rounded-md outline-none"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
-            />
-            <GoEyeClosed
-              className={`w-[24px] h-[24px] text-zinc-700 cursor-pointer ${
-                passwordType === "password" ? "" : "hidden"
-              }`}
-              onClick={() => setPasswordType("text")}
-            />
-            <GoEye
-              className={`w-[24px] h-[24px] text-zinc-700 cursor-pointer ${
-                passwordType === "text" ? "" : "hidden"
-              }`}
-              onClick={() => setPasswordType("password")}
-            />
-          </div>
-        </div>
-        <div className="w-1/2">
-          <p className="text-red-500 text-sm text-center">{regisStatus}</p>
+          <p className="text-red-500 text-sm text-center">{addAgentStatus}</p>
         </div>
         <div className="w-1/2">
           <button
@@ -285,12 +248,11 @@ const AddAdmin = ({ apiUrl, getAdmin }) => {
 
 const Admins = ({
   apiUrl,
-  setHideAddAdmin,
-  hideAddAdmin,
-  adminList,
+  setHideAddAgent,
+  hideAddAgent,
+  agentList,
   loading,
-  getStatus,
-  getAdmin,
+  getAgent,
   setEditForm,
   setEditId,
 }) => {
@@ -300,17 +262,17 @@ const Admins = ({
   const [loadingDelete, setLoadingDelete] = useState(false);
 
   useEffect(() => {
-    getAdmin();
+    getAgent();
   }, []);
 
-  const handleDeleteAdmin = async (id) => {
+  const handleDeleteAgent = async (id) => {
     const confirmation = window.confirm("Kamu yakin ?");
     if (confirmation) {
       try {
-        const response = await Axios.delete(`${apiUrl}/admin/${id}`);
+        const response = await Axios.delete(`${apiUrl}/agent/${id}`);
 
         if (response.data.success) {
-          getAdmin();
+          getAgent();
         } else if (response.data.error) {
           console.log(response.data.error);
         } else {
@@ -327,7 +289,7 @@ const Admins = ({
     setEditId(id);
   };
 
-  const filteredData = adminList.filter((item) => {
+  const filteredData = agentList.filter((item) => {
     return Object.values(item).some((value) =>
       value.toString().toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -337,7 +299,7 @@ const Admins = ({
     setSelectAll(!selectAll);
     if (!selectAll) {
       // Select all filtered items
-      setSelectedItems(filteredData.map((item) => item.admin_id));
+      setSelectedItems(filteredData.map((item) => item.agent_id));
     } else {
       // Deselect all items
       setSelectedItems([]);
@@ -356,28 +318,28 @@ const Admins = ({
     }
   }, [filteredData, selectedItems]);
 
-  const handleCheckboxChange = (admin_id) => {
+  const handleCheckboxChange = (agent_id) => {
     setSelectedItems((prevSelectedItems) => {
-      if (prevSelectedItems.includes(admin_id)) {
-        // Hapus admin_id dari selectedItems jika sudah ada
-        return prevSelectedItems.filter((id) => id !== admin_id);
+      if (prevSelectedItems.includes(agent_id)) {
+        // Hapus agent_id dari selectedItems jika sudah ada
+        return prevSelectedItems.filter((id) => id !== agent_id);
       } else {
-        // Tambah admin_id ke selectedItems jika belum ada
-        return [...prevSelectedItems, admin_id];
+        // Tambah agent_id ke selectedItems jika belum ada
+        return [...prevSelectedItems, agent_id];
       }
     });
   };
 
-  const handleDeleteMultipleAdmin = async () => {
+  const handleDeleteMultipleAgent = async () => {
     setLoadingDelete(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      const response = await Axios.delete(`${apiUrl}/multiple/admin`, {
+      const response = await Axios.delete(`${apiUrl}/adminwd/agent`, {
         data: { ids: selectedItems },
       });
       if (response.data.success) {
         alert("Hapus Berhasil!");
-        getAdmin();
+        getAgent();
       } else if (response.data.error) {
         console.log(response.data.error);
       } else {
@@ -395,9 +357,7 @@ const Admins = ({
   return (
     <>
       <div className="w-full px-6 flex flex-col">
-        <div className="w-full flex justify-center">
-          <p className="text-red-500 text-sm">{getStatus}</p>
-        </div>
+        <div className="w-full flex justify-center"></div>
 
         {loading ? (
           <div className="pt-2">
@@ -406,17 +366,17 @@ const Admins = ({
         ) : (
           <div className="w-full">
             <div className="w-full flex justify-start gap-2 pb-1 items-center">
-              {hideAddAdmin ? (
+              {hideAddAgent ? (
                 <button
                   className="py-1 px-2 rounded-md bg-[#602BF8] hover:bg-opacity-80"
-                  onClick={() => setHideAddAdmin(false)}
+                  onClick={() => setHideAddAgent(false)}
                 >
                   <MdGroupAdd className="text-lg text-zinc-100" />
                 </button>
               ) : (
                 <button
                   className="py-1 px-2 rounded-md bg-[#f82b2b] hover:bg-opacity-80"
-                  onClick={() => setHideAddAdmin(true)}
+                  onClick={() => setHideAddAgent(true)}
                 >
                   <TiCancelOutline className="text-lg text-zinc-100" />
                 </button>
@@ -446,7 +406,7 @@ const Admins = ({
                 Name
               </div>
               <div className="flex-1 flex justify-center kanit-medium">
-                Username
+                Provider
               </div>
               <div className="w-20"></div>
             </div>
@@ -458,30 +418,28 @@ const Admins = ({
                 <div className="w-10 flex justify-center">
                   <input
                     type="checkbox"
-                    name={item.admin_id}
-                    id={item.admin_id}
+                    name={item.agent_id}
+                    id={item.agent_id}
                     className="cursor-pointer"
-                    checked={selectedItems.includes(item.admin_id)}
-                    onChange={() => handleCheckboxChange(item.admin_id)}
+                    checked={selectedItems.includes(item.agent_id)}
+                    onChange={() => handleCheckboxChange(item.agent_id)}
                   />
                 </div>
+                <div className="flex-1 flex justify-center">{item.name}</div>
                 <div className="flex-1 flex justify-center">
-                  {item.fullname}
-                </div>
-                <div className="flex-1 flex justify-center">
-                  {item.username}
+                  {item.provider}
                 </div>
                 <div className="w-20 flex justify-center gap-1">
                   <button
                     className="py-1 px-2 rounded-md bg-[#602BF8] hover:bg-opacity-80"
-                    onClick={() => handleClickEdit(item.admin_id)}
+                    onClick={() => handleClickEdit(item.agent_id)}
                   >
                     <ImPencil2 className="text-zinc-100" />
                   </button>
                   <button className="py-1 px-2 rounded-md bg-[#f82b2b] hover:bg-opacity-80">
                     <RiDeleteBin6Fill
                       className="text-zinc-100"
-                      onClick={() => handleDeleteAdmin(item.admin_id)}
+                      onClick={() => handleDeleteAgent(item.agent_id)}
                     />
                   </button>
                 </div>
@@ -495,7 +453,7 @@ const Admins = ({
               onClick={() => {
                 const confirm = window.confirm("Kamu yakin menghapus data");
                 if (confirm) {
-                  handleDeleteMultipleAdmin();
+                  handleDeleteMultipleAgent();
                 }
               }}
             >
@@ -512,34 +470,27 @@ const Admins = ({
   );
 };
 
-const EditAdmin = ({ setEditForm, editId, adminList, apiUrl, getAdmin }) => {
+const EditAdmin = ({ setEditForm, editId, agentList, apiUrl, getAgent }) => {
   const [loading, setLoading] = useState(false);
-  const [passwordType, setPasswordType] = useState("password");
-  const [adminId, setAdminId] = useState();
-  const [newFullname, setNewFullname] = useState("");
-  const [newUsername, setNewUsername] = useState("");
-  const [newPass, setNewPass] = useState("");
-  const [status, setStatus] = useState("");
+  const [newAgentName, setNewAgentName] = useState("");
+  const [newProvider, setNewProvider] = useState("");
 
-  const dataSelect = adminList.find((item) => item.admin_id === editId);
+  const dataSelect = agentList.find((item) => item.agent_id === editId);
 
   const handleUpadateAdmin = async () => {
     setLoading(true);
     try {
-      const response = await Axios.put(`${apiUrl}/admin`, {
-        adminId: adminId,
-        newFullname: newFullname,
-        newUsername: newUsername,
-        newPass: newPass,
+      const response = await Axios.put(`${apiUrl}/adminwd/agent`, {
+        editId,
+        newAgentName,
+        newProvider,
       });
       if (response.data.success) {
         setEditForm(false);
-        getAdmin();
+        getAgent();
         setLoading(false);
-        setNewPass("");
       } else if (response.data.error) {
         console.log(response.data.error);
-        setStatus(response.data.error);
       } else {
         console.log("Something Error!");
       }
@@ -552,84 +503,53 @@ const EditAdmin = ({ setEditForm, editId, adminList, apiUrl, getAdmin }) => {
 
   useEffect(() => {
     if (editId != undefined) {
-      setNewFullname(dataSelect.fullname);
-      setNewUsername(dataSelect.username);
-      setNewPass("");
-      setAdminId(dataSelect.admin_id);
+      setNewAgentName(dataSelect.name);
+      setNewProvider(dataSelect.provider);
     }
   }, [editId]);
 
   return (
     <>
       <div className="p-3 bg-white shadow-md border rounded-md flex flex-col justify-center items-center gap-1">
-        <div className="">
-          <label htmlFor="edit-fullname" className="text-sm pl-2">
-            Nama Lengkap
+      <div className="">
+          <label htmlFor="agent" className="text-sm pl-2">
+            Agent
           </label>
           <div className="min-w-64 h-10 flex justify-between items-center gap-2 rounded-full border px-2">
             <RiAccountPinCircleFill className="w-[24px] h-[24px] text-zinc-700" />
             <input
               type="text"
-              id="edit-fullname"
+              id="agent"
               className="flex-1 h-full rounded-md outline-none"
-              placeholder="Nama Lengkap"
-              value={newFullname}
+              placeholder="Agent"
+              value={newAgentName}
               onChange={(e) => {
-                setNewFullname(e.target.value);
+                setNewAgentName(e.target.value);
               }}
             />
           </div>
         </div>
         <div className="">
-          <label htmlFor="edit-username" className="text-sm pl-2">
-            Username
+          <label htmlFor="agentName" className="text-sm pl-2">
+            Provider
           </label>
           <div className="min-w-64 h-10 flex justify-between items-center gap-2 rounded-full border px-2">
             <FaRegCircleUser className="w-[24px] h-[24px] text-zinc-700" />
-            <input
-              type="text"
-              id="edit-username"
+            <select
+              name="provider"
+              id="provider"
+              value={newProvider}
               className="flex-1 h-full rounded-md outline-none"
-              placeholder="Username"
-              value={newUsername}
-              onChange={(e) => {
-                setNewUsername(e.target.value);
-              }}
-            />
+              onChange={(e) => setNewProvider(e.target.value)}
+            >
+              <option value="">Pilih Provider</option>
+              <option value="IDNTOTO">IDNTOTO</option>
+              <option value="IDNSPORT">IDNSPORT</option>
+              <option value="MSC">MSC</option>
+              <option value="NEXUS">NEXUS</option>
+              <option value="SBO">SBO</option>
+            </select>
           </div>
-        </div>
-        <div className="">
-          <label htmlFor="edit-password" className="text-sm pl-2">
-            Password
-          </label>
-          <div className="min-w-64 h-10 flex justify-between items-center gap-2 rounded-full border px-2">
-            <RiLockPasswordFill className="w-[24px] h-[24px] text-zinc-700" />
-            <input
-              type={passwordType}
-              id="edit-password"
-              className="flex-1 h-full rounded-md outline-none"
-              placeholder="New Password"
-              value={newPass}
-              onChange={(e) => {
-                setNewPass(e.target.value);
-              }}
-            />
-            <GoEyeClosed
-              className={`w-[24px] h-[24px] text-zinc-700 cursor-pointer ${
-                passwordType === "password" ? "" : "hidden"
-              }`}
-              onClick={() => setPasswordType("text")}
-            />
-            <GoEye
-              className={`w-[24px] h-[24px] text-zinc-700 cursor-pointer ${
-                passwordType === "text" ? "" : "hidden"
-              }`}
-              onClick={() => setPasswordType("password")}
-            />
-          </div>
-        </div>
-        <div className="w-1/2">
-          <p className="text-red-500 text-sm text-center">{status}</p>
         </div>
         <div className="w-full flex pt-2 justify-center gap-2">
           <button

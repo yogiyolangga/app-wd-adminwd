@@ -16,11 +16,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Axios from "axios";
+import io from "socket.io-client";
 
 import { PiHandEyeFill } from "react-icons/pi";
 import { MdToday } from "react-icons/md";
 import { MdOutlinePendingActions } from "react-icons/md";
 import { BiLoaderCircle } from "react-icons/bi";
+
+const socket = io(import.meta.env.VITE_API_URL);
 
 export default function Dashboard() {
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -30,7 +33,21 @@ export default function Dashboard() {
   const [dataWdFromDb, setDataWdFromDb] = useState([]);
   const [fullname, setFullname] = useState("");
   const [adminId, setAdminId] = useState("");
+  const [profilePic, setProfilePic] = useState("");
   const [loadingGrab, setLoadingGrab] = useState(false);
+
+  const [receivedMessages, setReceivedMessages] = useState([]);
+
+  useEffect(() => {
+    socket.on("data_inserted", (data) => {
+      setReceivedMessages((prevMessages) => [...prevMessages, data.message]);
+      getDataWdFromDb();
+    });
+
+    return () => {
+      socket.off("data_inserted");
+    };
+  }, []);
 
   useEffect(() => {
     if (!userLogin || !token) {
@@ -61,6 +78,7 @@ export default function Dashboard() {
       if (response.data.success) {
         setFullname(response.data.result[0].fullname);
         setAdminId(response.data.result[0].admin_id);
+        setProfilePic(response.data.result[0].profile);
       } else if (response.data.error) {
         console.log(response.data.error);
       } else {
@@ -92,7 +110,7 @@ export default function Dashboard() {
   return (
     <>
       <div className="relative bg-white w-full max-w-[863px] lg:w-3/4 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
-        <Header fullname={fullname} />
+        <Header fullname={fullname} profilePic={profilePic} />
         <Sidebar />
         <Widget
           todayRequest={todayRequest}
@@ -185,12 +203,7 @@ const Widget = ({ todayRequest, pendingRequest, processRequest }) => {
   );
 };
 
-const GrabSection = ({
-  adminId,
-  apiUrl,
-  setLoadingGrab,
-  navigate,
-}) => {
+const GrabSection = ({ adminId, apiUrl, setLoadingGrab, navigate }) => {
   const [amount, setAmount] = useState(1000);
   const handleGrab = async (bankName) => {
     setLoadingGrab(true);
@@ -203,6 +216,8 @@ const GrabSection = ({
       });
       if (response.data.success) {
         navigate("/grabbed");
+      } else if (response.data.pending) {
+        alert(response.data.pending);
       } else if (response.data.error) {
         alert("Gagal mengambil data!");
         console.log(response.data.error);

@@ -25,6 +25,7 @@ export default function Agent() {
   const navigate = useNavigate();
 
   const [fullname, setFullname] = useState("");
+  const [profilePic, setProfilePic] = useState("");
   const [hideAddAgent, setHideAddAgent] = useState(true);
   const [editForm, setEditForm] = useState(false);
   const [agentList, setAgentList] = useState([]);
@@ -52,6 +53,7 @@ export default function Agent() {
       );
       if (response.data.success) {
         setFullname(response.data.result[0].fullname);
+        setProfilePic(response.data.result[0].profile);
       } else if (response.data.error) {
         console.log(response.data.error);
       } else {
@@ -108,7 +110,7 @@ export default function Agent() {
   return (
     <>
       <div className="relative bg-white w-full max-w-[863px] lg:w-3/4 min-h-96 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
-        <Header fullname={fullname} />
+        <Header fullname={fullname} profilePic={profilePic} />
         <Sidebar />
         <div
           className={`${

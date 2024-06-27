@@ -21,6 +21,7 @@ export default function History() {
 
   const [loading, setLoading] = useState(false);
   const [fullname, setFullname] = useState("");
+  const [profilePic, setProfilePic] = useState("");
   const [dataHistory, setDataHistory] = useState([]);
 
   useEffect(() => {
@@ -38,6 +39,7 @@ export default function History() {
       );
       if (response.data.success) {
         setFullname(response.data.result[0].fullname);
+        setProfilePic(response.data.result[0].profile);
       } else if (response.data.error) {
         console.log(response.data.error);
       } else {
@@ -100,7 +102,7 @@ export default function History() {
   return (
     <>
       <div className="relative bg-white w-full max-w-[863px] lg:w-3/4 min-h-96 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
-        <Header fullname={fullname} />
+        <Header fullname={fullname} profilePic={profilePic} />
         <Sidebar />
         <div>
           <Data

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
@@ -14,10 +14,13 @@ import { PiHandCoinsFill } from "react-icons/pi";
 import { BiLoaderCircle } from "react-icons/bi";
 import { FaSort } from "react-icons/fa6";
 import { TbListDetails } from "react-icons/tb";
+import { ImCloudUpload } from "react-icons/im";
+
 import TotalWdAgent from "./TotalWdAgent";
 
 export default function DataProcess() {
   const [dataDetails, setDataDetails] = useState(false);
+  const [evidencePath, setEvidencePath] = useState("");
   const [idDetail, setIdDetail] = useState();
   const [loading, setLoading] = useState(false);
 
@@ -28,6 +31,7 @@ export default function DataProcess() {
 
   const [fullname, setFullname] = useState("");
   const [adminId, setAdminId] = useState("");
+  const [profilePic, setProfilePic] = useState("");
 
   const [dataWdFromDb, setDataWdFromDb] = useState([]);
 
@@ -66,6 +70,7 @@ export default function DataProcess() {
       if (response.data.success) {
         setFullname(response.data.result[0].fullname);
         setAdminId(response.data.result[0].admin_id);
+        setProfilePic(response.data.result[0].profile);
       } else if (response.data.error) {
         console.log(response.data.error);
       } else {
@@ -88,6 +93,7 @@ export default function DataProcess() {
     const handleKeydown = (event) => {
       if (event.key === "Escape") {
         setDataDetails(false); // Set state to false when Escape is pressed
+        setEvidencePath("");
       }
     };
 
@@ -109,7 +115,7 @@ export default function DataProcess() {
   return (
     <>
       <div className="relative bg-white w-full max-w-[90%]  min-h-96 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
-        <Header fullname={fullname} />
+        <Header fullname={fullname} profilePic={profilePic} />
         <Sidebar />
         <div>
           <Data
@@ -141,6 +147,10 @@ export default function DataProcess() {
           idDetail={idDetail}
           rupiah={rupiah}
           fullname={fullname}
+          apiUrl={apiUrl}
+          setEvidencePath={setEvidencePath}
+          evidencePath={evidencePath}
+          getDataWdFromDb={getDataWdFromDb}
         />
       </div>
     </>
@@ -911,8 +921,55 @@ const Data = ({
   );
 };
 
-const DataDetails = ({ setDataDetails, dataWdFromDb, idDetail, rupiah }) => {
+const DataDetails = ({
+  setDataDetails,
+  dataWdFromDb,
+  idDetail,
+  rupiah,
+  apiUrl,
+  evidencePath,
+  setEvidencePath,
+  getDataWdFromDb,
+}) => {
+  const [loadUploadEvidence, setLoadUploadEvidence] = useState(false);
+  const fileEvidenceRef = useRef(null);
+
   const dataCheck = dataWdFromDb.find((item) => item.data_wd_id === idDetail);
+
+  const handleChangeEvidence = (e) => {
+    const file = e.target.files[0];
+    setEvidencePath(file);
+  };
+
+  const handleUploadEvidence = async () => {
+    setLoadUploadEvidence(true);
+    const formData = new FormData();
+    formData.append("image", evidencePath);
+    formData.append("wdid", idDetail);
+
+    try {
+      const response = await Axios.put(`${apiUrl}/adminwd/evidence`, formData);
+
+      if (response.data.success) {
+        alert("Success!");
+        getDataWdFromDb();
+        setDataDetails(false);
+        setEvidencePath("");
+      } else if (response.data.error) {
+        console.log(response.data.error);
+      } else {
+        console.log("Something error!");
+      }
+
+      setLoadUploadEvidence(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleIconUploadClick = () => {
+    fileEvidenceRef.current.click();
+  };
 
   const formatDate = (isoString) => {
     const date = new Date(isoString);
@@ -929,6 +986,11 @@ const DataDetails = ({ setDataDetails, dataWdFromDb, idDetail, rupiah }) => {
 
     // Gabungkan menjadi format yang diinginkan
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  };
+
+  const handleCloseDetails = () => {
+    setDataDetails(false);
+    setEvidencePath("");
   };
 
   return (
@@ -990,17 +1052,67 @@ const DataDetails = ({ setDataDetails, dataWdFromDb, idDetail, rupiah }) => {
             <div className="flex-1 px-2">{dataCheck.status}</div>
           </div>
           <div className="min-w-96 flex px-2 border-b">
-            <div className="flex-1 px-2 border-r">Admin</div>
-            <div className="flex-1 px-2">
-              {dataCheck.admin_name === null ? "-" : dataCheck.admin_name}
+            <div className="flex-1 px-2 border-r">Bukti</div>
+            <div className="flex-1 flex items-center gap-1 px-2">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleChangeEvidence}
+                ref={fileEvidenceRef}
+                className="hidden"
+              />
+              {dataCheck.evidence ? (
+                <a href={`${apiUrl}/${dataCheck.evidence}`} target="_blank" className="underline">
+                  lihat
+                </a>
+              ) : (
+                <span>Tidak Tersedia</span>
+              )}
+              <ImCloudUpload
+                className="text-xl text-[#602BF8] cursor-pointer"
+                onClick={handleIconUploadClick}
+              />
             </div>
           </div>
-          <div className="w-full flex justify-center items-center py-2">
+          <div className="min-w-96 flex px-2 border-b">
+            <div className="flex-1 flex items-center px-2 border-r">Admin</div>
+            <div className="flex-1 flex gap-2 items-center px-2">
+              <div>
+                {dataCheck.admin_name === null ? "-" : dataCheck.admin_name}
+              </div>
+              <div>
+                {dataCheck.profile ? (
+                  <a href={`${apiUrl}/${dataCheck.profile}`} target="_blank">
+                    <img
+                      src={`${apiUrl}/${dataCheck.profile}`}
+                      alt="Profile"
+                      className="w-14 h-14 rounded-full"
+                    />
+                  </a>
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="w-full flex gap-2 justify-center items-center py-2">
             <button
               className="px-2 py-1 rounded-md bg-zinc-200"
-              onClick={() => setDataDetails(false)}
+              onClick={handleCloseDetails}
             >
               Close
+            </button>
+            <button
+              className={`${
+                evidencePath ? "" : "hidden"
+              } bg-[#602BF8] rounded-md px-2 py-1 text-zinc-100 text-base`}
+              onClick={handleUploadEvidence}
+            >
+              {loadUploadEvidence ? (
+                <BiLoaderCircle className="animate-spin text-base" />
+              ) : (
+                "Upload"
+              )}
             </button>
           </div>
         </div>

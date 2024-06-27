@@ -8,6 +8,7 @@ import DataProcessSuperAdmin from "./components/DataProcessSuperAdmin";
 import History from "./components/History";
 import HistoryDetails from "./components/HistoryDetails";
 import Agent from "./components/Agent";
+import Profile from "./components/Profile";
 
 function App() {
   return (
@@ -19,11 +20,15 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/grabbed" element={<Grabbed />} />
             <Route path="/data-process" element={<DataProcess />} />
-            <Route path="/data-process-supadmin" element={<DataProcessSuperAdmin />} />
+            <Route
+              path="/data-process-supadmin"
+              element={<DataProcessSuperAdmin />}
+            />
             <Route path="/history" element={<History />} />
             <Route path="/history/:id" element={<HistoryDetails />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/agent" element={<Agent />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </Router>
       </div>

@@ -35,6 +35,7 @@ export default function Grabbed() {
   const [dataWdFromDb, setDataWdFromDb] = useState([]);
   const [fullname, setFullname] = useState("");
   const [adminId, setAdminId] = useState("");
+  const [profilePic, setProfilePic] = useState("");
 
   const [dataDetails, setDataDetails] = useState(false);
   const [idDetail, setIdDetail] = useState();
@@ -55,6 +56,7 @@ export default function Grabbed() {
       if (response.data.success) {
         setFullname(response.data.result[0].fullname);
         setAdminId(response.data.result[0].admin_id);
+        setProfilePic(response.data.result[0].profile);
       } else if (response.data.error) {
         console.log(response.data.error);
       } else {
@@ -118,7 +120,7 @@ export default function Grabbed() {
   return (
     <>
       <div className="relative bg-white w-full max-w-[90%]  min-h-96 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
-        <Header fullname={fullname} />
+        <Header fullname={fullname} profilePic={profilePic} />
         <Sidebar />
         <div className={`px-4 ${dataWdFromDb.length < 1 ? "" : "hidden"}`}>
           <GrabSection
@@ -421,6 +423,34 @@ const Data = ({
     navigator.clipboard.writeText(value);
   }
 
+  function getToday() {
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, "0");
+    let mm = today.getMonth(); // getMonth() returns 0-11
+    let yyyy = today.getFullYear();
+
+    // Array nama bulan
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    // Mengambil nama bulan dari array
+    let month = monthNames[mm];
+
+    return dd + "-" + month + "-" + yyyy;
+  }
+
   return (
     <>
       <div className="w-full py-2 flex flex-col gap-1 px-6">
@@ -440,7 +470,7 @@ const Data = ({
                   setSearchTerm(e.target.value);
                 }}
               />
-              <span className="text-sm">15-Jun-24</span>
+              <span className="text-sm kanit-regular">{getToday()}</span>
             </div>
             <table className="w-full text-left">
               <thead className="bg-zinc-200">

@@ -72,7 +72,7 @@ export default function TotalWdAgent({ dataWdFromDb }) {
   return (
     <>
       <div>
-        <h2 className="kanit-medium">Total WD Agent</h2>
+        <h2 className="kanit-medium dark:text-zinc-50">Total WD Agent</h2>
         <div className="relative overflow-x-auto rounded-md min-w-[500px]">
           {loading ? (
             <div>
@@ -80,7 +80,7 @@ export default function TotalWdAgent({ dataWdFromDb }) {
             </div>
           ) : (
             <table className="w-full text-left border-2 border-black">
-              <thead className="bg-zinc-200">
+              <thead className="bg-zinc-200 dark:bg-zinc-600 dark:text-zinc-50">
                 <tr>
                   <th scope="col" className="px-6 py-2 kanit-medium">
                     Agent
@@ -95,7 +95,7 @@ export default function TotalWdAgent({ dataWdFromDb }) {
               </thead>
               <tbody>
                 {agentList.map((item, index) => (
-                  <tr key={index} className={`border-b hover:bg-zinc-100 ${getLengtByAgent(item.agent_id) === 0 ? "hidden" : ""}`}>
+                  <tr key={index} className={`border-b hover:bg-zinc-100 dark:text-zinc-50 dark:hover:bg-zinc-600 ${getLengtByAgent(item.agent_id) === 0 ? "hidden" : ""}`}>
                     <th scope="row" className="px-6 py-1 kanit-regular">
                       {item.name}
                     </th>
@@ -109,7 +109,7 @@ export default function TotalWdAgent({ dataWdFromDb }) {
                 ))}
               </tbody>
               <tfoot>
-                <tr className="bg-zinc-200">
+                <tr className="bg-zinc-200 dark:bg-zinc-600 dark:text-zinc-50">
                   <th scope="row" className="px-6 py-2 kanit-medium">
                     Grand Total
                   </th>

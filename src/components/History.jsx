@@ -101,7 +101,7 @@ export default function History() {
 
   return (
     <>
-      <div className="relative bg-white w-full max-w-[863px] lg:w-3/4 min-h-96 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
+      <div className="relative bg-white dark:bg-zinc-700 w-full max-w-[863px] lg:w-3/4 min-h-96 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
         <Header fullname={fullname} profilePic={profilePic} />
         <Sidebar />
         <div>
@@ -120,7 +120,7 @@ export default function History() {
 
 const Data = ({ loading, apiUrl, dataHistory, setLoading, getDataHistory }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [postPerPage, setPostPerPage] = useState(10);
+  const [postPerPage, setPostPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
 
@@ -300,7 +300,9 @@ const Data = ({ loading, apiUrl, dataHistory, setLoading, getDataHistory }) => {
         ) : (
           <div className="relative overflow-x-auto shadow-md rounded-md w-3/4 mx-auto">
             <div className="flex-1 flex justify-start px-2 items-center">
-              <span className="text-sm kanit-medium">{today}</span>
+              <span className="text-sm kanit-medium dark:text-zinc-50">
+                {today}
+              </span>
             </div>
             <div className="flex flex-col md:flex-row px-2 py-1 justify-between items-center gap-2">
               <div className="flex-1">
@@ -316,7 +318,7 @@ const Data = ({ loading, apiUrl, dataHistory, setLoading, getDataHistory }) => {
               </div>
             </div>
             <table className="w-full text-left">
-              <thead className="bg-zinc-200">
+              <thead className="bg-zinc-200 dark:bg-zinc-600 dark:text-zinc-50">
                 <tr>
                   <th
                     scope="col"
@@ -352,7 +354,10 @@ const Data = ({ loading, apiUrl, dataHistory, setLoading, getDataHistory }) => {
               </thead>
               <tbody>
                 {currentData.map((item, index) => (
-                  <tr key={index} className="border-b hover:bg-zinc-100">
+                  <tr
+                    key={index}
+                    className="border-b hover:bg-zinc-100 dark:hover:bg-zinc-600 dark:text-zinc-50"
+                  >
                     <td className="px-3 py-3">{index + 1}</td>
                     <td className="px-3 py-3">
                       {formatDate(item.closed_timestamp)}
@@ -391,7 +396,7 @@ const Data = ({ loading, apiUrl, dataHistory, setLoading, getDataHistory }) => {
               className="flex p-2 items-center justify-between pt-4"
               aria-label="Table navigation"
             >
-              <span className="">
+              <span className="dark:text-zinc-50">
                 Menampilkan{" "}
                 <span className="">{`${firstPostIndex + 1} - ${
                   lastPostIndex <= filteredData.length
@@ -404,7 +409,7 @@ const Data = ({ loading, apiUrl, dataHistory, setLoading, getDataHistory }) => {
                 <select
                   name="post-per-page"
                   id="post-per-page"
-                  className="outline-none border rounded-md"
+                  className="outline-none border rounded-md dark:bg-zinc-600 dark:text-zinc-50"
                   value={postPerPage}
                   onChange={(e) => handlePostPerPage(e.target.value)}
                 >
@@ -418,7 +423,7 @@ const Data = ({ loading, apiUrl, dataHistory, setLoading, getDataHistory }) => {
                 </select>
                 <li>
                   <div
-                    className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg cursor-pointer"
+                    className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white dark:bg-zinc-600 dark:text-zinc-50 border border-gray-300 rounded-s-lg cursor-pointer"
                     onClick={handlePrevPage}
                   >
                     <TbPlayerTrackPrevFilled />
@@ -429,7 +434,7 @@ const Data = ({ loading, apiUrl, dataHistory, setLoading, getDataHistory }) => {
                     <div
                       className={`flex items-center justify-center px-3 h-8 leading-tight cursor-pointer border border-gray-300 ${
                         page == currentPage
-                          ? "bg-[#602BF8] text-white"
+                          ? "bg-[#602BF8] text-white dark:bg-zinc-950"
                           : "bg-white text-gray-500"
                       }`}
                       onClick={() => {
@@ -442,7 +447,7 @@ const Data = ({ loading, apiUrl, dataHistory, setLoading, getDataHistory }) => {
                 ))}
                 <li>
                   <div
-                    className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg cursor-pointer"
+                    className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border dark:bg-zinc-600 dark:text-zinc-50 border-gray-300 rounded-e-lg cursor-pointer"
                     onClick={handleNextPage}
                   >
                     <TbPlayerTrackNextFilled />

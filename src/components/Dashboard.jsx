@@ -109,7 +109,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className="relative bg-white w-full max-w-[863px] lg:w-3/4 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
+      <div className="relative bg-white dark:bg-zinc-700 w-full max-w-[863px] lg:w-3/4 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
         <Header fullname={fullname} profilePic={profilePic} />
         <Sidebar />
         <Widget
@@ -144,55 +144,55 @@ const Widget = ({ todayRequest, pendingRequest, processRequest }) => {
       <div className="w-full flex justify-end gap-8">
         <div className="w-[238px] h-[174px] py-6 rounded-[14px] shadow-2xl">
           <div className="flex justify-between px-6 items-center">
-            <div className="text-[14px] font-light">TODAY REQUEST</div>
+            <div className="text-[14px] font-light dark:text-zinc-200">TODAY REQUEST</div>
             <div>
-              <MdToday className="w-[24px] h-[24px]" />
+              <MdToday className="w-[24px] h-[24px] dark:text-zinc-200" />
             </div>
           </div>
-          <div className="font-extrabold text-[40px] px-6">
+          <div className="font-extrabold text-[40px] px-6 dark:text-zinc-200">
             {todayRequest.length}
           </div>
           <hr className="w-full bg-[#DDDBE2] mt-3" />
           <div className="w-[188px] h-[7px] rounded-[31px] bg-[#C8C0DF] mx-auto mt-4">
-            <div className="w-[133px] h-[7px] rounded-[31px] bg-[#602BF8]"></div>
+            <div className="w-[133px] h-[7px] rounded-[31px] bg-[#602BF8] dark:bg-zinc-950"></div>
           </div>
           <div className="px-6">
-            <h1 className="text-[12px] font-bold text-black">
+            <h1 className="text-[12px] font-bold text-black dark:text-zinc-200">
               Process Average
             </h1>
           </div>
         </div>
         <div className="w-[238px] h-[174px] py-6 rounded-[14px] shadow-2xl">
           <div className="flex justify-between px-6 items-center">
-            <div className="text-[14px] font-light">PENDING REQUEST</div>
+            <div className="text-[14px] font-light dark:text-zinc-200">PENDING REQUEST</div>
             <div>
-              <MdOutlinePendingActions className="w-[24px] h-[24px]" />
+              <MdOutlinePendingActions className="w-[24px] h-[24px] dark:text-zinc-200" />
             </div>
           </div>
-          <div className="font-extrabold text-[40px] px-6">
+          <div className="font-extrabold text-[40px] px-6 dark:text-zinc-200">
             {pendingRequest.length}
           </div>
           <hr className="w-full bg-[#DDDBE2] mt-3" />
           <div className="w-[188px] h-[7px] rounded-[31px] bg-[#C8C0DF] mx-auto mt-4">
-            <div className="w-[133px] h-[7px] rounded-[31px] bg-[#602BF8]"></div>
+            <div className="w-[133px] h-[7px] rounded-[31px] bg-[#602BF8] dark:bg-zinc-950"></div>
           </div>
           <div className="px-6">
-            <h1 className="text-[12px] font-bold text-black">Last Min Queue</h1>
+            <h1 className="text-[12px] font-bold text-black dark:text-zinc-200">Last Min Queue</h1>
           </div>
         </div>
         <div className="w-[238px] h-[174px] py-6 rounded-[14px] shadow-2xl">
           <div className="flex justify-between px-6 items-center">
-            <div className="text-[14px] font-light">ON PROCESS</div>
+            <div className="text-[14px] font-light dark:text-zinc-200">ON PROCESS</div>
             <div>
-              <PiHandEyeFill className="w-[24px] h-[24px] text-black" />
+              <PiHandEyeFill className="w-[24px] h-[24px] text-black dark:text-zinc-200" />
             </div>
           </div>
-          <div className="font-extrabold text-[40px] px-6">
+          <div className="font-extrabold text-[40px] px-6 dark:text-zinc-200">
             {processRequest.length}
           </div>
           <hr className="w-full bg-[#DDDBE2] mt-3" />
           <div className="w-[188px] h-[7px] rounded-[31px] bg-[#C8C0DF] mx-auto mt-4">
-            <div className="w-[133px] h-[7px] rounded-[31px] bg-[#602BF8]"></div>
+            <div className="w-[133px] h-[7px] rounded-[31px] bg-[#602BF8] dark:bg-zinc-950"></div>
           </div>
           <div className="px-6">
             <h1 className="text-[12px] font-bold text-black">Response Rate</h1>
@@ -304,7 +304,7 @@ const Amout = ({ amount, setAmount }) => {
         <div className="w-full flex gap-3">
           <div
             className={`p-3 rounded-full w-8 h-8 flex justify-center items-center font-bold text-white hover:scale-105 duration-100 cursor-pointer ${
-              amount === 3 ? "bg-[#602BF8]" : "bg-[#999899]"
+              amount === 3 ? "bg-[#602BF8] dark:bg-zinc-950" : "bg-[#999899]"
             }`}
             onClick={() => setAmount(3)}
           >
@@ -312,7 +312,7 @@ const Amout = ({ amount, setAmount }) => {
           </div>
           <div
             className={`p-3 rounded-full w-8 h-8 flex justify-center items-center font-bold text-white hover:scale-105 duration-100 cursor-pointer ${
-              amount === 5 ? "bg-[#602BF8]" : "bg-[#999899]"
+              amount === 5 ? "bg-[#602BF8] dark:bg-zinc-950" : "bg-[#999899]"
             }`}
             onClick={() => setAmount(5)}
           >
@@ -320,7 +320,7 @@ const Amout = ({ amount, setAmount }) => {
           </div>
           <div
             className={`p-3 rounded-full w-8 h-8 flex justify-center items-center font-bold text-white hover:scale-105 duration-100 cursor-pointer ${
-              amount === 10 ? "bg-[#602BF8]" : "bg-[#999899]"
+              amount === 10 ? "bg-[#602BF8] dark:bg-zinc-950" : "bg-[#999899]"
             }`}
             onClick={() => setAmount(10)}
           >
@@ -328,7 +328,7 @@ const Amout = ({ amount, setAmount }) => {
           </div>
           <div
             className={`p-3 rounded-full w-8 h-8 flex justify-center items-center font-bold text-white hover:scale-105 duration-100 cursor-pointer ${
-              amount === 20 ? "bg-[#602BF8]" : "bg-[#999899]"
+              amount === 20 ? "bg-[#602BF8] dark:bg-zinc-950" : "bg-[#999899]"
             }`}
             onClick={() => setAmount(20)}
           >
@@ -336,7 +336,7 @@ const Amout = ({ amount, setAmount }) => {
           </div>
           <div
             className={`p-3 rounded-full w-8 h-8 flex justify-center items-center font-bold text-white hover:scale-105 duration-100 cursor-pointer ${
-              amount === 1000 ? "bg-[#602BF8]" : "bg-[#999899]"
+              amount === 1000 ? "bg-[#602BF8] dark:bg-zinc-950" : "bg-[#999899]"
             }`}
             onClick={() => setAmount(1000)}
           >
@@ -352,7 +352,7 @@ const GrabButton = ({ src, handleGrab, bankName }) => {
   return (
     <>
       <div
-        className="px-3 py-3 w-[200px] min-h-20 rounded-xl bg-[#ffffff] cursor-pointer hover:scale-105 duration-100 shadow-xl flex justify-center items-center active:scale-95"
+        className="px-3 py-3 w-[200px] min-h-20 rounded-xl bg-[#ffffff] dark:bg-zinc-900 cursor-pointer hover:scale-105 duration-100 shadow-xl dark:shadow-zinc-500 flex justify-center items-center active:scale-95"
         onClick={() => handleGrab(bankName)}
       >
         <div className="flex w-full items-center justify-center gap-1">

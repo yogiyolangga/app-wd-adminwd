@@ -109,7 +109,7 @@ export default function Agent() {
 
   return (
     <>
-      <div className="relative bg-white w-full max-w-[863px] lg:w-3/4 min-h-96 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
+      <div className="relative bg-white dark:bg-zinc-700 w-full max-w-[863px] lg:w-3/4 min-h-96 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
         <Header fullname={fullname} profilePic={profilePic} />
         <Sidebar />
         <div
@@ -194,18 +194,18 @@ const AddAdmin = ({ apiUrl, getAgent }) => {
     <>
       <form
         onSubmit={handleSubmit}
-        className="w-full px-6 flex flex-col justify-center items-center gap-1"
+        className="w-full px-6 flex flex-col justify-center items-center gap-1 dark:text-zinc-50"
       >
         <div className="w-1/2">
           <label htmlFor="agent" className="text-sm pl-2">
             Agent
           </label>
           <div className="min-w-64 h-10 flex justify-between items-center gap-2 rounded-full border px-2">
-            <RiAccountPinCircleFill className="w-[24px] h-[24px] text-zinc-700" />
+            <RiAccountPinCircleFill className="w-[24px] h-[24px] text-zinc-700 dark:text-zinc-50" />
             <input
               type="text"
               id="agent"
-              className="flex-1 h-full rounded-md outline-none"
+              className="flex-1 h-full rounded-md outline-none dark:bg-transparent"
               placeholder="Agent"
               value={agentName}
               onChange={(e) => {
@@ -219,12 +219,12 @@ const AddAdmin = ({ apiUrl, getAgent }) => {
             Provider
           </label>
           <div className="min-w-64 h-10 flex justify-between items-center gap-2 rounded-full border px-2">
-            <FaRegCircleUser className="w-[24px] h-[24px] text-zinc-700" />
+            <FaRegCircleUser className="w-[24px] h-[24px] text-zinc-700 dark:text-zinc-50" />
             <select
               name="provider"
               id="provider"
               value={provider}
-              className="flex-1 h-full rounded-md outline-none"
+              className="flex-1 h-full rounded-md outline-none dark:bg-zinc-700"
               onChange={(e) => setProvider(e.target.value)}
             >
               <option value="">Pilih Provider</option>
@@ -242,7 +242,7 @@ const AddAdmin = ({ apiUrl, getAgent }) => {
         <div className="w-1/2">
           <button
             type="submit"
-            className="w-full rounded-full flex justify-center items-center text-white bg-gradient-to-tl from-[#00E1FD] to-[#602BF8] h-10 hover:opacity-70"
+            className="w-full rounded-full flex justify-center items-center text-white bg-gradient-to-tl from-[#00E1FD] to-[#602BF8] dark:from-zinc-900 dark:to-zinc-800 h-10 hover:opacity-70"
           >
             {loading === true ? (
               <AiOutlineLoading3Quarters className="animate-spin text-lg" />
@@ -378,7 +378,7 @@ const Admins = ({
             <div className="w-full flex justify-start gap-2 pb-1 items-center">
               {hideAddAgent ? (
                 <button
-                  className="py-1 px-2 rounded-md bg-[#602BF8] hover:bg-opacity-80"
+                  className="py-1 px-2 rounded-md bg-[#602BF8] hover:bg-opacity-80 dark:bg-zinc-900"
                   onClick={() => setHideAddAgent(false)}
                 >
                   <MdGroupAdd className="text-lg text-zinc-100" />
@@ -401,7 +401,7 @@ const Admins = ({
                 }}
               />
             </div>
-            <div className="w-full flex justify-evenly items-center gap-1 py-1 border">
+            <div className="w-full flex justify-evenly items-center gap-1 py-1 border dark:bg-zinc-900 dark:text-zinc-50">
               <div className="w-10 flex justify-center">
                 <input
                   type="checkbox"
@@ -423,7 +423,7 @@ const Admins = ({
             {filteredData.map((item, index) => (
               <div
                 key={index}
-                className="w-full flex justify-evenly items-center gap-1 py-1 border"
+                className="w-full flex justify-evenly items-center gap-1 py-1 border dark:text-zinc-50"
               >
                 <div className="w-10 flex justify-center">
                   <input
@@ -520,8 +520,8 @@ const EditAdmin = ({ setEditForm, editId, agentList, apiUrl, getAgent }) => {
 
   return (
     <>
-      <div className="p-3 bg-white shadow-md border rounded-md flex flex-col justify-center items-center gap-1">
-      <div className="">
+      <div className="p-3 bg-white dark:bg-zinc-900 dark:text-zinc-50 shadow-md border rounded-md flex flex-col justify-center items-center gap-1">
+        <div className="">
           <label htmlFor="agent" className="text-sm pl-2">
             Agent
           </label>
@@ -530,7 +530,7 @@ const EditAdmin = ({ setEditForm, editId, agentList, apiUrl, getAgent }) => {
             <input
               type="text"
               id="agent"
-              className="flex-1 h-full rounded-md outline-none"
+              className="flex-1 h-full rounded-md outline-none dark:bg-transparent"
               placeholder="Agent"
               value={newAgentName}
               onChange={(e) => {
@@ -549,7 +549,7 @@ const EditAdmin = ({ setEditForm, editId, agentList, apiUrl, getAgent }) => {
               name="provider"
               id="provider"
               value={newProvider}
-              className="flex-1 h-full rounded-md outline-none"
+              className="flex-1 h-full rounded-md outline-none dark:bg-zinc-900"
               onChange={(e) => setNewProvider(e.target.value)}
             >
               <option value="">Pilih Provider</option>

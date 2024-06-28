@@ -25,7 +25,7 @@ export function Sidebar() {
 
   return (
     <>
-      <div className="absolute z-10 -left-6 top-1/2 -translate-y-1/2 w-[55px] h-[300px] rounded-[47px] bg-[#602BF8] drop-shadow-md flex flex-col items-center justify-evenly">
+      <div className="absolute z-10 -left-6 top-1/2 -translate-y-1/2 w-[55px] h-[300px] rounded-[47px] bg-[#602BF8] dark:bg-zinc-950 drop-shadow-md flex flex-col items-center justify-evenly">
         <a href="/">
           <BiSolidHome
             className={`w-[24px] h-[24px] hover:text-white ${
@@ -89,7 +89,7 @@ export function Sidebar() {
           </div>
           <a
             href="/admin"
-            className="absolute right-1 opacity-0 -top-3 bg-[#602BF8] p-3 rounded-l-full group-hover:right-9 group-hover:opacity-100 duration-200"
+            className="absolute right-1 opacity-0 -top-3 bg-[#602BF8] dark:bg-zinc-950 p-3 rounded-l-full group-hover:right-9 group-hover:opacity-100 duration-200"
           >
             <HiUserGroup
               className={`w-[24px] h-[24px] hover:text-white ${
@@ -100,7 +100,7 @@ export function Sidebar() {
           </a>
           <a
             href="/agent"
-            className="absolute left-1 opacity-0 -top-3 bg-[#602BF8] p-3 rounded-r-full group-hover:left-9 group-hover:opacity-100 duration-200"
+            className="absolute left-1 opacity-0 -top-3 bg-[#602BF8] dark:bg-zinc-950 p-3 rounded-r-full group-hover:left-9 group-hover:opacity-100 duration-200"
           >
             <FaMagento
               className={`w-[24px] h-[24px] hover:text-white ${

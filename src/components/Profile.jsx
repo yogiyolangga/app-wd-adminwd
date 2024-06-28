@@ -53,7 +53,7 @@ export default function Profile() {
 
   return (
     <>
-      <div className="relative bg-white max-w-[863px] lg:w-3/4  min-h-96 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
+      <div className="relative bg-white dark:bg-zinc-700 max-w-[863px] lg:w-3/4  min-h-96 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
         <Header fullname={fullname} profilePic={profilePic} />
         <Sidebar />
         <div>
@@ -128,7 +128,7 @@ const DataProfile = ({
 
   return (
     <>
-      <div className="w-full h-full flex justify-center items-center">
+      <div className="w-full h-full dark:text-zinc-50 flex justify-center items-center">
         <div className="flex w-full flex-col gap-2 justify-center items-center">
           <form
             className="flex flex-col items-center gap-1"
@@ -182,7 +182,7 @@ const DataProfile = ({
                 value={newName}
                 readOnly={true}
                 onChange={(e) => setNewName(e.target.value)}
-                className="bg-zinc-100 outline-none p-1 rounded border"
+                className="bg-zinc-100 outline-none p-1 rounded border dark:bg-transparent"
               />
             </div>
             <div className="flex justify-between items-center border-b kanit-regular">
@@ -192,7 +192,7 @@ const DataProfile = ({
                 value={newUsername}
                 readOnly={true}
                 onChange={(e) => setNewUsername(e.target.value)}
-                className="bg-zinc-100 outline-none p-1 rounded"
+                className="bg-zinc-100 outline-none p-1 rounded dark:bg-transparent"
               />
             </div>
             <div className="flex justify-between items-center border-b kanit-regular">
@@ -201,7 +201,7 @@ const DataProfile = ({
                 type="text"
                 value={roleAdminWd}
                 readOnly={true}
-                className="bg-zinc-100 outline-none p-1 rounded"
+                className="bg-zinc-100 outline-none p-1 rounded dark:bg-transparent"
               />
             </div>
           </div>

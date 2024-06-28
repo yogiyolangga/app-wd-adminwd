@@ -119,7 +119,7 @@ export default function Grabbed() {
 
   return (
     <>
-      <div className="relative bg-white w-full max-w-[90%]  min-h-96 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
+      <div className="relative bg-white dark:bg-zinc-700 w-full max-w-[90%]  min-h-96 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
         <Header fullname={fullname} profilePic={profilePic} />
         <Sidebar />
         <div className={`px-4 ${dataWdFromDb.length < 1 ? "" : "hidden"}`}>
@@ -177,7 +177,7 @@ const Data = ({
   apiUrl,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [postPerPage, setPostPerPage] = useState(10);
+  const [postPerPage, setPostPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -470,10 +470,10 @@ const Data = ({
                   setSearchTerm(e.target.value);
                 }}
               />
-              <span className="text-sm kanit-regular">{getToday()}</span>
+              <span className="text-sm kanit-regular dark:text-zinc-200">{getToday()}</span>
             </div>
             <table className="w-full text-left">
-              <thead className="bg-zinc-200">
+              <thead className="bg-zinc-200 dark:bg-zinc-600 dark:text-zinc-50">
                 <tr>
                   <th scope="col" className="p-4">
                     <div className="flex items-center">
@@ -550,7 +550,7 @@ const Data = ({
               </thead>
               <tbody>
                 {currentData.map((item, index) => (
-                  <tr key={index} className="border-b hover:bg-zinc-100">
+                  <tr key={index} className="border-b hover:bg-zinc-100 dark:hover:bg-zinc-600 dark:text-zinc-50">
                     <td className="w-4 p-4">
                       <div className="flex items-center">
                         <input
@@ -647,7 +647,7 @@ const Data = ({
               className="flex p-2 items-center justify-between pt-4"
               aria-label="Table navigation"
             >
-              <span className="">
+              <span className="dark:text-zinc-50">
                 Menampilkan{" "}
                 <span className="">{`${firstPostIndex + 1} - ${
                   lastPostIndex <= filteredData.length
@@ -660,7 +660,7 @@ const Data = ({
                 <select
                   name="post-per-page"
                   id="post-per-page"
-                  className="outline-none border rounded-md"
+                  className="outline-none border rounded-md dark:bg-zinc-600 dark:text-zinc-50"
                   value={postPerPage}
                   onChange={(e) => setPostPerPage(e.target.value)}
                 >
@@ -674,7 +674,7 @@ const Data = ({
                 </select>
                 <li>
                   <div
-                    className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg cursor-pointer"
+                    className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white dark:bg-zinc-600 dark:text-zinc-50 border border-gray-300 rounded-s-lg cursor-pointer"
                     onClick={handlePrevPage}
                   >
                     <TbPlayerTrackPrevFilled />
@@ -685,7 +685,7 @@ const Data = ({
                     <div
                       className={`flex items-center justify-center px-3 h-8 leading-tight cursor-pointer border border-gray-300 ${
                         page == currentPage
-                          ? "bg-[#602BF8] text-white"
+                          ? "bg-[#602BF8] text-white dark:bg-zinc-950"
                           : "bg-white text-gray-500"
                       }`}
                       onClick={() => {
@@ -698,7 +698,7 @@ const Data = ({
                 ))}
                 <li>
                   <div
-                    className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg cursor-pointer"
+                    className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white dark:bg-zinc-600 dark:text-zinc-50 border border-gray-300 rounded-e-lg cursor-pointer"
                     onClick={handleNextPage}
                   >
                     <TbPlayerTrackNextFilled />
@@ -1002,7 +1002,7 @@ const GrabButton = ({ src, handleGrab, bankName }) => {
   return (
     <>
       <div
-        className="px-3 py-3 w-[200px] min-h-20 rounded-xl bg-[#ffffff] cursor-pointer hover:scale-105 duration-100 shadow-xl flex justify-center items-center active:scale-95"
+        className="px-3 py-3 w-[200px] min-h-20 rounded-xl bg-[#ffffff] dark:bg-zinc-900 cursor-pointer hover:scale-105 duration-100 shadow-xl dark:shadow-zinc-500 flex justify-center items-center active:scale-95"
         onClick={() => handleGrab(bankName)}
       >
         <div className="flex w-full items-center justify-center gap-1">

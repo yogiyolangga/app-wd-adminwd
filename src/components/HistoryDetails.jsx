@@ -112,7 +112,7 @@ export default function HistoryDetails() {
 
   return (
     <>
-      <div className="relative bg-white w-full max-w-[90%]  min-h-96 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
+      <div className="relative bg-white dark:bg-zinc-700 w-full max-w-[90%]  min-h-96 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
         <Header fullname={fullname} profilePic={profilePic} />
         <Sidebar />
         <div>
@@ -482,10 +482,14 @@ const Data = ({
         ) : (
           <div className="relative overflow-x-auto shadow-md rounded-md">
             <div className="flex justify-between px-2 items-center">
-              <span className="text-sm kanit-medium">{today}</span>
+              <span className="text-sm kanit-medium dark:text-zinc-50">
+                {today}
+              </span>
               <div>
-                <span className="kanit-regular">Closing Time : </span>
-                <span className="text-sm kanit-medium underline">
+                <span className="kanit-regular dark:text-zinc-50">
+                  Closing Time :{" "}
+                </span>
+                <span className="text-sm kanit-medium underline dark:text-zinc-50">
                   {dataHistoryDetails.length < 1
                     ? "time"
                     : formatDate(dataHistoryDetails[0].closed_timestamp)}
@@ -506,30 +510,30 @@ const Data = ({
               </div>
               <div className="flex flex-col md:flex-row flex-wrap w-full gap-2 p-1 rounded-md border flex-1 justify-center">
                 <button
-                  className="w-20 flex justify-center items-center border p-1 rounded-md shadow-md bg-blue-300"
+                  className="w-20 flex justify-center items-center border p-1 rounded-md shadow-md bg-blue-300 dark:bg-zinc-400 dark:text-zinc-50"
                   onClick={() => handleFilterByStatus("all")}
                 >
                   All
                 </button>
                 <button
-                  className="w-20 flex justify-center items-center border p-1 rounded-md shadow-md bg-green-300"
+                  className="w-20 flex justify-center items-center border p-1 rounded-md shadow-md bg-green-300 dark:bg-zinc-600 dark:text-zinc-50"
                   onClick={() => handleFilterByStatus("success")}
                 >
                   Success
                 </button>
                 <button
-                  className="w-20 flex justify-center items-center border p-1 rounded-md shadow-md bg-red-600 text-white"
+                  className="w-20 flex justify-center items-center border p-1 rounded-md shadow-md bg-red-600 dark:bg-zinc-800 text-white"
                   onClick={() => handleFilterByStatus("reject")}
                 >
                   Reject
                 </button>
               </div>
             </div>
-            <div className="px-2">
+            <div className="px-2 dark:text-zinc-50">
               <h1>Menampilkan Data : {statusData}</h1>
             </div>
             <table className="w-full text-left">
-              <thead className="bg-zinc-200">
+              <thead className="bg-zinc-200 dark:bg-zinc-600 dark:text-zinc-50">
                 <tr>
                   <th scope="col" className="px-3 py-4">
                     <div className="flex items-center">
@@ -615,7 +619,10 @@ const Data = ({
               </thead>
               <tbody>
                 {currentData.map((item, index) => (
-                  <tr key={index} className="border-b hover:bg-zinc-100">
+                  <tr
+                    key={index}
+                    className="border-b hover:bg-zinc-100 dark:hover:bg-zinc-600 dark:text-zinc-50"
+                  >
                     <td className="w-4 px-3 py-2">
                       <div className="flex items-center">
                         <input
@@ -714,7 +721,7 @@ const Data = ({
               className="flex p-2 items-center justify-between pt-4"
               aria-label="Table navigation"
             >
-              <span className="">
+              <span className="dark:text-zinc-50">
                 Menampilkan{" "}
                 <span className="">{`${firstPostIndex + 1} - ${
                   lastPostIndex <= filteredData.length
@@ -727,7 +734,7 @@ const Data = ({
                 <select
                   name="post-per-page"
                   id="post-per-page"
-                  className="outline-none border rounded-md"
+                  className="outline-none border rounded-md dark:bg-zinc-600 dark:text-zinc-50"
                   value={postPerPage}
                   onChange={(e) => handlePostPerPage(e.target.value)}
                 >
@@ -741,7 +748,7 @@ const Data = ({
                 </select>
                 <li>
                   <div
-                    className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg cursor-pointer"
+                    className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white dark:bg-zinc-600 dark:text-zinc-50 border border-gray-300 rounded-s-lg cursor-pointer"
                     onClick={handlePrevPage}
                   >
                     <TbPlayerTrackPrevFilled />
@@ -752,7 +759,7 @@ const Data = ({
                     <div
                       className={`flex items-center justify-center px-3 h-8 leading-tight cursor-pointer border border-gray-300 ${
                         page == currentPage
-                          ? "bg-[#602BF8] text-white"
+                          ? "bg-[#602BF8] text-white dark:bg-zinc-950"
                           : "bg-white text-gray-500"
                       }`}
                       onClick={() => {
@@ -765,7 +772,7 @@ const Data = ({
                 ))}
                 <li>
                   <div
-                    className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg cursor-pointer"
+                    className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white dark:bg-zinc-600 dark:text-zinc-50 border border-gray-300 rounded-e-lg cursor-pointer"
                     onClick={handleNextPage}
                   >
                     <TbPlayerTrackNextFilled />
@@ -813,7 +820,7 @@ const DataDetails = ({
       {idDetail === undefined || dataCheck === undefined ? (
         ""
       ) : (
-        <div className="p-3 bg-white shadow-md border rounded-md flex flex-col justify-center items-center gap-1">
+        <div className="p-3 bg-white dark:bg-zinc-900 dark:text-zinc-50 shadow-md border rounded-md flex flex-col justify-center items-center gap-1">
           <div className="min-w-96 flex px-2 border-b">
             <div className="flex-1 px-2 border-r">Agent</div>
             <div className="flex-1 px-2 kanit-medium">
@@ -905,7 +912,7 @@ const DataDetails = ({
           </div>
           <div className="w-full flex justify-center items-center py-2">
             <button
-              className="px-2 py-1 rounded-md bg-zinc-200"
+              className="px-2 py-1 rounded-md bg-zinc-200 dark:bg-zinc-950 dark:text-zinc-50"
               onClick={() => setDataDetails(false)}
             >
               Close

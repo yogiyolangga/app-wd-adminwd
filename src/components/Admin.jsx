@@ -109,7 +109,7 @@ export default function Admin() {
 
   return (
     <>
-      <div className="relative bg-white w-full max-w-[863px] lg:w-3/4 min-h-96 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
+      <div className="relative bg-white dark:bg-zinc-700 w-full max-w-[863px] lg:w-3/4 min-h-96 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
         <Header fullname={fullname} profilePic={profilePic} />
         <Sidebar />
         <div
@@ -205,18 +205,18 @@ const AddAdmin = ({ apiUrl, getAdmin }) => {
     <>
       <form
         onSubmit={handleSubmit}
-        className="w-full px-6 flex flex-col justify-center items-center gap-1"
+        className="w-full px-6 flex flex-col justify-center items-center gap-1 dark:text-zinc-50"
       >
         <div className="w-1/2">
           <label htmlFor="fullname" className="text-sm pl-2">
             Nama Lengkap
           </label>
           <div className="min-w-64 h-10 flex justify-between items-center gap-2 rounded-full border px-2">
-            <RiAccountPinCircleFill className="w-[24px] h-[24px] text-zinc-700" />
+            <RiAccountPinCircleFill className="w-[24px] h-[24px] text-zinc-700 dark:text-zinc-50" />
             <input
               type="text"
               id="fullname"
-              className="flex-1 h-full rounded-md outline-none"
+              className="flex-1 h-full rounded-md outline-none dark:bg-transparent"
               placeholder="Nama Lengkap"
               value={fullname}
               onChange={(e) => {
@@ -230,11 +230,11 @@ const AddAdmin = ({ apiUrl, getAdmin }) => {
             Username
           </label>
           <div className="min-w-64 h-10 flex justify-between items-center gap-2 rounded-full border px-2">
-            <FaRegCircleUser className="w-[24px] h-[24px] text-zinc-700" />
+            <FaRegCircleUser className="w-[24px] h-[24px] text-zinc-700 dark:text-zinc-50" />
             <input
               type="text"
               id="username"
-              className="flex-1 h-full rounded-md outline-none"
+              className="flex-1 h-full rounded-md outline-none dark:bg-transparent"
               placeholder="Username"
               value={username}
               onChange={(e) => {
@@ -248,11 +248,11 @@ const AddAdmin = ({ apiUrl, getAdmin }) => {
             Password
           </label>
           <div className="min-w-64 h-10 flex justify-between items-center gap-2 rounded-full border px-2">
-            <RiLockPasswordFill className="w-[24px] h-[24px] text-zinc-700" />
+            <RiLockPasswordFill className="w-[24px] h-[24px] text-zinc-700 dark:text-zinc-50" />
             <input
               type={passwordType}
               id="password"
-              className="flex-1 h-full rounded-md outline-none"
+              className="flex-1 h-full rounded-md outline-none dark:bg-transparent"
               placeholder="Password"
               value={password}
               onChange={(e) => {
@@ -260,13 +260,13 @@ const AddAdmin = ({ apiUrl, getAdmin }) => {
               }}
             />
             <GoEyeClosed
-              className={`w-[24px] h-[24px] text-zinc-700 cursor-pointer ${
+              className={`w-[24px] h-[24px] text-zinc-700 dark:text-zinc-50 cursor-pointer ${
                 passwordType === "password" ? "" : "hidden"
               }`}
               onClick={() => setPasswordType("text")}
             />
             <GoEye
-              className={`w-[24px] h-[24px] text-zinc-700 cursor-pointer ${
+              className={`w-[24px] h-[24px] text-zinc-700 dark:text-zinc-50 cursor-pointer ${
                 passwordType === "text" ? "" : "hidden"
               }`}
               onClick={() => setPasswordType("password")}
@@ -279,7 +279,7 @@ const AddAdmin = ({ apiUrl, getAdmin }) => {
         <div className="w-1/2">
           <button
             type="submit"
-            className="w-full rounded-full flex justify-center items-center text-white bg-gradient-to-tl from-[#00E1FD] to-[#602BF8] h-10 hover:opacity-70"
+            className="w-full rounded-full flex justify-center items-center text-white bg-gradient-to-tl from-[#00E1FD] to-[#602BF8] dark:from-zinc-900 dark:to-zinc-800 h-10 hover:opacity-70"
           >
             {loading === true ? (
               <AiOutlineLoading3Quarters className="animate-spin text-lg" />
@@ -418,7 +418,7 @@ const Admins = ({
             <div className="w-full flex justify-start gap-2 pb-1 items-center">
               {hideAddAdmin ? (
                 <button
-                  className="py-1 px-2 rounded-md bg-[#602BF8] hover:bg-opacity-80"
+                  className="py-1 px-2 rounded-md bg-[#602BF8] dark:bg-zinc-900 hover:bg-opacity-80"
                   onClick={() => setHideAddAdmin(false)}
                 >
                   <MdGroupAdd className="text-lg text-zinc-100" />
@@ -441,7 +441,7 @@ const Admins = ({
                 }}
               />
             </div>
-            <div className="w-full flex justify-evenly items-center gap-1 py-1 border">
+            <div className="w-full flex justify-evenly items-center gap-1 py-1 border dark:bg-zinc-900 dark:text-zinc-50">
               <div className="w-10 flex justify-center">
                 <input
                   type="checkbox"
@@ -463,7 +463,7 @@ const Admins = ({
             {filteredData.map((item, index) => (
               <div
                 key={index}
-                className="w-full flex justify-evenly items-center gap-1 py-1 border"
+                className="w-full flex justify-evenly items-center gap-1 py-1 border dark:text-zinc-50"
               >
                 <div className="w-10 flex justify-center">
                   <input
@@ -571,7 +571,7 @@ const EditAdmin = ({ setEditForm, editId, adminList, apiUrl, getAdmin }) => {
 
   return (
     <>
-      <div className="p-3 bg-white shadow-md border rounded-md flex flex-col justify-center items-center gap-1">
+      <div className="p-3 bg-white dark:bg-zinc-900 dark:text-zinc-50 shadow-md border rounded-md flex flex-col justify-center items-center gap-1">
         <div className="">
           <label htmlFor="edit-fullname" className="text-sm pl-2">
             Nama Lengkap
@@ -581,7 +581,7 @@ const EditAdmin = ({ setEditForm, editId, adminList, apiUrl, getAdmin }) => {
             <input
               type="text"
               id="edit-fullname"
-              className="flex-1 h-full rounded-md outline-none"
+              className="flex-1 h-full rounded-md outline-none dark:bg-transparent"
               placeholder="Nama Lengkap"
               value={newFullname}
               onChange={(e) => {
@@ -599,7 +599,7 @@ const EditAdmin = ({ setEditForm, editId, adminList, apiUrl, getAdmin }) => {
             <input
               type="text"
               id="edit-username"
-              className="flex-1 h-full rounded-md outline-none"
+              className="flex-1 h-full rounded-md outline-none dark:bg-transparent"
               placeholder="Username"
               value={newUsername}
               onChange={(e) => {
@@ -617,7 +617,7 @@ const EditAdmin = ({ setEditForm, editId, adminList, apiUrl, getAdmin }) => {
             <input
               type={passwordType}
               id="edit-password"
-              className="flex-1 h-full rounded-md outline-none"
+              className="flex-1 h-full rounded-md outline-none dark:bg-transparent"
               placeholder="New Password"
               value={newPass}
               onChange={(e) => {

@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
-import { FaRegLightbulb, FaLightbulb } from "react-icons/fa";
+import { FaRegLightbulb } from "react-icons/fa";
 import { useEffect, useState } from "react";
 
 export default function Header({ fullname, profilePic }) {

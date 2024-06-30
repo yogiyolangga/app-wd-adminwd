@@ -195,7 +195,7 @@ const Widget = ({ todayRequest, pendingRequest, processRequest }) => {
             <div className="w-[133px] h-[7px] rounded-[31px] bg-[#602BF8] dark:bg-zinc-950"></div>
           </div>
           <div className="px-6">
-            <h1 className="text-[12px] font-bold text-black">Response Rate</h1>
+            <h1 className="text-[12px] font-bold text-black dark:text-zinc-200">Response Rate</h1>
           </div>
         </div>
       </div>

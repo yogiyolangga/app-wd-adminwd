@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import { Sidebar } from "./Sidebar";
 import Loading from "./Loading";
+import ClipboardJS from "clipboard";
+
+import moment from "moment-timezone";
 
 import { GiConfirmed, GiCancel } from "react-icons/gi";
 import { PiHandCoinsFill } from "react-icons/pi";
@@ -26,6 +29,7 @@ import dana from "../assets/dana.png";
 import ovo from "../assets/ovo.png";
 import gopay from "../assets/gopay.png";
 import all from "../assets/all.png";
+import WidgetInfo from "./WidgetInfo";
 
 export default function Grabbed() {
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -122,6 +126,7 @@ export default function Grabbed() {
       <div className="relative bg-white dark:bg-zinc-700 w-full max-w-[90%]  min-h-96 rounded-[18px] flex flex-col gap-6 p-8 pb-14">
         <Header fullname={fullname} profilePic={profilePic} />
         <Sidebar />
+        <WidgetInfo />
         <div className={`px-4 ${dataWdFromDb.length < 1 ? "" : "hidden"}`}>
           <GrabSection
             adminId={adminId}
@@ -420,7 +425,25 @@ const Data = ({
   };
 
   function copyText(value) {
-    navigator.clipboard.writeText(value);
+    const dummyButton = document.createElement("button");
+    dummyButton.setAttribute("data-clipboard-text", value);
+    document.body.appendChild(dummyButton);
+
+    const clipboard = new ClipboardJS(dummyButton);
+
+    clipboard.on("success", () => {
+      console.log("Text copied to clipboard");
+      document.body.removeChild(dummyButton);
+      clipboard.destroy();
+    });
+
+    clipboard.on("error", (err) => {
+      console.error("Failed to copy text: ", err);
+      document.body.removeChild(dummyButton);
+      clipboard.destroy();
+    });
+
+    dummyButton.click();
   }
 
   function getToday() {
@@ -470,7 +493,9 @@ const Data = ({
                   setSearchTerm(e.target.value);
                 }}
               />
-              <span className="text-sm kanit-regular dark:text-zinc-200">{getToday()}</span>
+              <span className="text-sm kanit-regular dark:text-zinc-200">
+                {getToday()}
+              </span>
             </div>
             <table className="w-full text-left">
               <thead className="bg-zinc-200 dark:bg-zinc-600 dark:text-zinc-50">
@@ -550,7 +575,10 @@ const Data = ({
               </thead>
               <tbody>
                 {currentData.map((item, index) => (
-                  <tr key={index} className="border-b hover:bg-zinc-100 dark:hover:bg-zinc-600 dark:text-zinc-50">
+                  <tr
+                    key={index}
+                    className="border-b hover:bg-zinc-100 dark:hover:bg-zinc-600 dark:text-zinc-50"
+                  >
                     <td className="w-4 p-4">
                       <div className="flex items-center">
                         <input
@@ -773,18 +801,20 @@ const Data = ({
 const DataDetails = ({ setDataDetails, dataWdFromDb, idDetail, rupiah }) => {
   const dataCheck = dataWdFromDb.find((item) => item.data_wd_id === idDetail);
 
-  const formatDate = (isoString) => {
-    const date = new Date(isoString);
+  // Fungsi untuk memformat tanggal dengan zona waktu Jakarta
+  const formatDate = (dbTimeString) => {
+    // Buat objek moment dari string waktu database dan atur ke zona waktu Jakarta
+    const date = moment.tz(dbTimeString, "Asia/Jakarta");
 
-    // Ambil tahun, bulan, dan hari (UTC)
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // getUTCMonth() dimulai dari 0
-    const day = String(date.getUTCDate()).padStart(2, "0");
+    // Ambil tahun, bulan, dan hari di zona waktu Jakarta
+    const year = date.year();
+    const month = String(date.month() + 1).padStart(2, "0"); // month() dimulai dari 0
+    const day = String(date.date()).padStart(2, "0");
 
-    // Ambil jam, menit, dan detik (UTC)
-    const hours = String(date.getUTCHours()).padStart(2, "0");
-    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-    const seconds = String(date.getUTCSeconds()).padStart(2, "0");
+    // Ambil jam, menit, dan detik di zona waktu Jakarta
+    const hours = String(date.hour()).padStart(2, "0");
+    const minutes = String(date.minute()).padStart(2, "0");
+    const seconds = String(date.second()).padStart(2, "0");
 
     // Gabungkan menjadi format yang diinginkan
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;

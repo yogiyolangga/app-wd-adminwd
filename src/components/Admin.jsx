@@ -13,6 +13,7 @@ import { ImPencil2 } from "react-icons/im";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { MdGroupAdd } from "react-icons/md";
 import { TiCancelOutline } from "react-icons/ti";
+import { FaUserFriends } from "react-icons/fa";
 
 import Loading from "./Loading";
 import { useNavigate } from "react-router-dom";
@@ -157,6 +158,7 @@ const AddAdmin = ({ apiUrl, getAdmin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [regisStatus, setRegisStatus] = useState("");
+  const [role, setRole] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -173,12 +175,15 @@ const AddAdmin = ({ apiUrl, getAdmin }) => {
         setRegisStatus("Username Invalid!");
       } else if (fullname.length < 5) {
         setRegisStatus("Isi name lengkap yang lengkap :)");
+      } else if (role === "") {
+        setRegisStatus("Pilih Role!");
       } else if (password.length < 8) {
         setRegisStatus("Password minimal 8 karakter ya!");
       } else {
         const response = await Axios.post(`${apiUrl}/admin/register`, {
           fullname: fullname,
           username: username,
+          role: role,
           password: password,
         });
 
@@ -241,6 +246,36 @@ const AddAdmin = ({ apiUrl, getAdmin }) => {
                 setUsername(e.target.value);
               }}
             />
+          </div>
+        </div>
+        <div className="w-1/2">
+          <label htmlFor="role" className="text-sm pl-2">
+            Role
+          </label>
+          <div className="min-w-64 h-10 flex justify-between items-center gap-2 rounded-full border px-2">
+            <FaUserFriends className="w-[24px] h-[24px] text-zinc-700 dark:text-zinc-50" />
+            <select
+              name="role"
+              id="role"
+              className="outline-none dark:bg-transparent flex-1"
+              value={role}
+              onChange={(e) => {
+                setRole(e.target.value);
+              }}
+            >
+              <option className="dark:bg-zinc-600" value="">
+                Pilih Role
+              </option>
+              <option className="dark:bg-zinc-600" value="administrator">
+                Administrator
+              </option>
+              <option className="dark:bg-zinc-600" value="moderator">
+                Moderator
+              </option>
+              <option className="dark:bg-zinc-600" value="staff">
+                Staff
+              </option>
+            </select>
           </div>
         </div>
         <div className="w-1/2">
@@ -481,6 +516,7 @@ const Admins = ({
                 <div className="flex-1 flex justify-center">
                   {item.username}
                 </div>
+                <div className="flex-1 flex justify-center">{item.role}</div>
                 <div className="w-20 flex justify-center gap-1">
                   <button
                     className="py-1 px-2 rounded-md bg-[#602BF8] hover:bg-opacity-80"
@@ -530,6 +566,7 @@ const EditAdmin = ({ setEditForm, editId, adminList, apiUrl, getAdmin }) => {
   const [newUsername, setNewUsername] = useState("");
   const [newPass, setNewPass] = useState("");
   const [status, setStatus] = useState("");
+  const [newRole, setnewRole] = useState("");
 
   const dataSelect = adminList.find((item) => item.admin_id === editId);
 
@@ -541,6 +578,7 @@ const EditAdmin = ({ setEditForm, editId, adminList, apiUrl, getAdmin }) => {
         newFullname: newFullname,
         newUsername: newUsername,
         newPass: newPass,
+        newRole: newRole,
       });
       if (response.data.success) {
         setEditForm(false);
@@ -565,6 +603,7 @@ const EditAdmin = ({ setEditForm, editId, adminList, apiUrl, getAdmin }) => {
       setNewFullname(dataSelect.fullname);
       setNewUsername(dataSelect.username);
       setNewPass("");
+      setnewRole(dataSelect.role);
       setAdminId(dataSelect.admin_id);
     }
   }, [editId]);
@@ -606,6 +645,36 @@ const EditAdmin = ({ setEditForm, editId, adminList, apiUrl, getAdmin }) => {
                 setNewUsername(e.target.value);
               }}
             />
+          </div>
+        </div>
+        <div className="">
+          <label htmlFor="role" className="text-sm pl-2">
+            Role
+          </label>
+          <div className="min-w-64 h-10 flex justify-between items-center gap-2 rounded-full border px-2">
+            <FaUserFriends className="w-[24px] h-[24px] text-zinc-700 dark:text-zinc-50" />
+            <select
+              name="role"
+              id="role"
+              className="outline-none flex-1 dark:bg-transparent"
+              value={newRole}
+              onChange={(e) => {
+                setnewRole(e.target.value);
+              }}
+            >
+              <option className="dark:bg-zinc-600" value="">
+                Pilih Role
+              </option>
+              <option className="dark:bg-zinc-600" value="administrator">
+                Administrator
+              </option>
+              <option className="dark:bg-zinc-600" value="moderator">
+                Moderator
+              </option>
+              <option className="dark:bg-zinc-600" value="staff">
+                Staff
+              </option>
+            </select>
           </div>
         </div>
         <div className="">
